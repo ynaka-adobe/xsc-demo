@@ -64,7 +64,7 @@ export async function loadTarget() {
  * Opt-in via meta target-mbox-hero and optional target-mbox-hero-selector.
  */
 export async function applyTargetHeroMboxIfConfigured() {
-  if (isUePreviewHost() || !isHomePage()) return;
+  if (isUePreviewHost()) return;
   const mbox = getMetadata('target-mbox-hero')?.trim();
   if (!mbox) return;
 
