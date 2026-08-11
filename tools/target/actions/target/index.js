@@ -60,6 +60,67 @@ async function main(params) {
     } else if (resource === 'audiences') {
       data = await targetRequest('GET', '/audiences?limit=100', tenant, clientId, token);
 
+    } else if (resource === 'audience' && params.id) {
+      data = await targetRequest('GET', `/audiences/${params.id}`, tenant, clientId, token);
+
+    } else if (resource === 'create-audience') {
+      // Simple audience: match a URL/mbox query parameter equal to a value.
+      // Params: name (required), param (required), value (required), description (optional).
+      const { name, param, value, description } = params;
+      if (!name || !param || value === undefined || value === '') {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: 'create-audience requires name, param, and value' }),
+        };
+      }
+
+      // Simple query-parameter audience: match when the page query string
+      // contains "param=value" (same rule shape Target uses for URL audiences).
+      const audienceDef = {
+        name,
+        description: description || 'Created via Personalize app',
+        targetRule: { page: 'query', containsIgnoreCase: [`${param}=${value}`] },
+      };
+
+      data = await targetRequest('POST', '/audiences', tenant, clientId, token, audienceDef);
+
+    } else if (resource === 'create-activity') {
+      // Multi-experience XT activity: one experience per audience/offer pair.
+      // params: name, mbox (optional), experiences = JSON array of {audienceId, offerId}.
+      let pairs;
+      try {
+        pairs = JSON.parse(params.experiences || '[]');
+      } catch (e) {
+        return { statusCode: 400, body: JSON.stringify({ error: 'experiences must be valid JSON' }) };
+      }
+      const mboxName = params.mbox || 'target-global-mbox';
+      if (!params.name || !Array.isArray(pairs) || pairs.length === 0) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: 'create-activity requires name and a non-empty experiences array' }),
+        };
+      }
+
+      const experiences = pairs.map((p, i) => ({
+        experienceLocalId: i,
+        name: `Experience ${i + 1}`,
+        audienceIds: [Number(p.audienceId)],
+        offerLocations: [{ locationLocalId: 0, offerId: Number(p.offerId) }],
+      }));
+
+      const activityBody = {
+        name: params.name,
+        state: 'approved',
+        priority: 0,
+        locations: {
+          mboxes: [{ locationLocalId: 0, name: mboxName }],
+        },
+        experiences,
+        metrics: [{ metricLocalId: 32767, name: 'Conversion', conversion: true }],
+      };
+
+      data = await targetRequest('POST', '/activities/xt', tenant, clientId, token, activityBody);
+
     } else if (resource === 'create-xt') {
       // body arrives as a JSON string in params.__ow_body for POST, or as parsed params for GET
       let activityDef;
