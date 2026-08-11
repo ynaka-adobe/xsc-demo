@@ -20,6 +20,18 @@ function targetOfferBlockHtml(mboxName) {
     + `</tbody></table>`;
 }
 
+// DA Metadata block that enables Target on the page and points the hero-mbox
+// swap at the target-offer block. `target-at-js` is intentionally omitted —
+// head.html already sets it site-wide, and a duplicate breaks the loader.
+function targetMetadataBlockHtml(mboxName) {
+  return `<table><tbody>`
+    + `<tr><td>Metadata</td></tr>`
+    + `<tr><td>target</td><td>on</td></tr>`
+    + `<tr><td>target-mbox-hero</td><td>${mboxName}</td></tr>`
+    + `<tr><td>target-mbox-hero-selector</td><td>.target-offer</td></tr>`
+    + `</tbody></table>`;
+}
+
 async function fetchAudiences() {
   const resp = await fetch(`${RUNTIME_URL}?${new URLSearchParams({ resource: 'audiences' })}`);
   if (!resp.ok) throw new Error(`Runtime error: ${resp.status}`);
@@ -529,9 +541,11 @@ function renderMatrix(audiences, offers, assignments, onChange = () => {}) {
         status.textContent = 'Open this app inside DA to add the block to a page.';
         return;
       }
-      daContext.actions.sendHTML(targetOfferBlockHtml(ACTIVITY_MBOX));
+      daContext.actions.sendHTML(
+        targetMetadataBlockHtml(ACTIVITY_MBOX) + targetOfferBlockHtml(ACTIVITY_MBOX),
+      );
       status.className = 'form-status';
-      status.textContent = `Added a target-offer block (mbox "${ACTIVITY_MBOX}") to the page.`;
+      status.textContent = `Added a target-offer block + Target metadata (mbox "${ACTIVITY_MBOX}") to the page.`;
     });
 
     const openLink = document.createElement('a');
