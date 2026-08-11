@@ -21,7 +21,7 @@ function logTargetError(e, el) {
 }
 
 export async function loadTarget() {
-  if (isUePreviewHost() || !isHomePage()) return;
+  if (isUePreviewHost()) return;
   const targetMeta = getMetadata('target');
   if (!targetMeta) return;
 
