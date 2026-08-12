@@ -4,6 +4,12 @@
   "editUrlPattern": "https://da.live/edit#/{{org}}/{{site}}{{pathname}}",
   "plugins": [
     {
+      "id": "audiences",
+      "title": "Audiences",
+      "environments": ["preview", "live"],
+      "includePaths": ["**"]
+    },
+    {
       "id": "generate-variations",
       "title": "Generate Variations",
       "url": "https://experience.adobe.com/aem/generate-variations",
@@ -17,12 +23,6 @@
       "url": "https://experience.adobe.com/#/@acsmarketing/target/activities/activityLibrary",
       "passConfig": true,
       "environments": ["preview", "live", "edit"],
-      "includePaths": ["**"]
-    },
-    {
-      "id": "audiences",
-      "title": "Audiences",
-      "environments": ["preview", "live"],
       "includePaths": ["**"]
     }
   ]
