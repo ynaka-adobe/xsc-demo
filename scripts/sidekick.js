@@ -18,8 +18,14 @@ async function toggleExp() {
   expMod.default();
 }
 
+async function showAudiences() {
+  const { default: audiences } = await import('./audiences.js');
+  audiences();
+}
+
 (async function sidekick() {
   const sk = document.querySelector('aem-sidekick');
   if (!sk) return;
   sk.addEventListener('custom:experimentation', toggleExp);
+  sk.addEventListener('custom:audiences', showAudiences);
 }());

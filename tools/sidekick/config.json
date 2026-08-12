@@ -18,6 +18,12 @@
       "passConfig": true,
       "environments": ["preview", "live", "edit"],
       "includePaths": ["**"]
+    },
+    {
+      "id": "audiences",
+      "title": "Audiences",
+      "environments": ["preview", "live"],
+      "includePaths": ["**"]
     }
   ]
 }

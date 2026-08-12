@@ -1,0 +1,73 @@
+.audiences-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  background: rgb(0 0 0 / 20%);
+}
+
+.audiences-panel__box {
+  margin: 64px 16px 0 0;
+  width: 280px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 25%);
+  padding: 16px;
+  font-family: sans-serif;
+}
+
+.audiences-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.audiences-panel__header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.audiences-panel__close {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+}
+
+.audiences-panel__empty {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.audiences-panel__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.audiences-panel__list li + li {
+  margin-top: 6px;
+}
+
+.audiences-panel__list button {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f7f7f7;
+  cursor: pointer;
+}
+
+.audiences-panel__list button:hover {
+  background: #eef4fd;
+  border-color: #1473e6;
+}
