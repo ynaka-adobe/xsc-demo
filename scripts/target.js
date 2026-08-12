@@ -5,12 +5,6 @@ export function isUePreviewHost(hostname = window.location.hostname) {
   return /\.(?:stage-ue|ue)\.da\.live$/.test(hostname);
 }
 
-/** Homepage only — Target hero/page-load activities are not used on inner pages. */
-export function isHomePage(pathname = window.location.pathname) {
-  const path = pathname.replace(/\/$/, '') || '/';
-  return path === '/' || path === '/index';
-}
-
 /**
  * @param {unknown} e
  * @param {Element} [el]
