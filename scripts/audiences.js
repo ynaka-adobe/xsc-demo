@@ -47,70 +47,85 @@ async function fetchAudiencesForMboxes(mboxNames) {
   return audiences.filter(Boolean);
 }
 
-function closePanel() {
-  document.querySelector('.audiences-panel')?.remove();
+function closeList() {
+  document.querySelector('.audiences-list')?.remove();
+  document.removeEventListener('click', onOutsideClick, true);
 }
 
-function renderPanel(audiences, mboxNames) {
-  closePanel();
+function onOutsideClick(e) {
+  if (!e.target.closest('.audiences-list')) closeList();
+}
 
-  const overlay = document.createElement('div');
-  overlay.className = 'audiences-panel';
+/** Current audience selection, derived from the ?mode= query param (unset = "Default"). */
+function activeMode() {
+  return new URLSearchParams(window.location.search).get('mode');
+}
 
-  const panel = document.createElement('div');
-  panel.className = 'audiences-panel__box';
+function goToMode(mode) {
+  const url = new URL(window.location.href);
+  if (mode) url.searchParams.set('mode', mode);
+  else url.searchParams.delete('mode');
+  window.location.href = url.toString();
+}
 
-  const header = document.createElement('div');
-  header.className = 'audiences-panel__header';
-  header.innerHTML = `<h3>Audiences${mboxNames.length ? ` — ${mboxNames.join(', ')}` : ''}</h3>`;
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'audiences-panel__close';
-  closeBtn.textContent = '✕';
-  closeBtn.addEventListener('click', closePanel);
-  header.append(closeBtn);
-  panel.append(header);
+function renderList(audiences) {
+  closeList();
 
-  if (!mboxNames.length) {
-    panel.innerHTML += '<p class="audiences-panel__empty">No mbox found on this page.</p>';
-  } else if (!audiences.length) {
-    panel.innerHTML += '<p class="audiences-panel__empty">No active audiences found for this page\'s mbox(es).</p>';
+  const list = document.createElement('ul');
+  list.className = 'audiences-list';
+  list.setAttribute('role', 'listbox');
+
+  const current = activeMode();
+
+  const addOption = (label, mode, selected) => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = label;
+    btn.setAttribute('role', 'option');
+    btn.setAttribute('aria-selected', String(selected));
+    if (selected) btn.classList.add('is-selected');
+    btn.addEventListener('click', () => goToMode(mode));
+    li.append(btn);
+    list.append(li);
+  };
+
+  addOption('Default', null, !current);
+  if (!audiences.length) {
+    const li = document.createElement('li');
+    li.className = 'audiences-list__empty';
+    li.textContent = 'No active audiences for this page.';
+    list.append(li);
   } else {
-    const list = document.createElement('ul');
-    list.className = 'audiences-panel__list';
     audiences.forEach((a) => {
-      const li = document.createElement('li');
-      const btn = document.createElement('button');
-      btn.textContent = a.name;
-      btn.addEventListener('click', () => {
-        const url = new URL(window.location.href);
-        url.searchParams.set('mode', a.name);
-        window.location.href = url.toString();
-      });
-      li.append(btn);
-      list.append(li);
+      addOption(a.name, a.name, current?.toLowerCase() === a.name.toLowerCase());
     });
-    panel.append(list);
   }
 
-  overlay.append(panel);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closePanel(); });
-  document.body.append(overlay);
+  document.body.append(list);
+  // Defer so the click that opened the list doesn't immediately close it.
+  setTimeout(() => document.addEventListener('click', onOutsideClick, true), 0);
 }
 
 export default async function showAudiences() {
   await loadCSS('/styles/audiences.css');
 
-  const overlay = document.createElement('div');
-  overlay.className = 'audiences-panel';
-  overlay.innerHTML = '<div class="audiences-panel__box"><p class="audiences-panel__empty">Loading audiences…</p></div>';
-  document.body.append(overlay);
+  if (document.querySelector('.audiences-list')) {
+    closeList();
+    return;
+  }
+
+  const list = document.createElement('ul');
+  list.className = 'audiences-list';
+  list.innerHTML = '<li class="audiences-list__empty">Loading…</li>';
+  document.body.append(list);
 
   const mboxNames = pageMboxNames();
   try {
     const audiences = await fetchAudiencesForMboxes(mboxNames);
-    renderPanel(audiences, mboxNames);
+    renderList(audiences);
   } catch (err) {
-    renderPanel([], mboxNames);
+    renderList([]);
     // eslint-disable-next-line no-console
     console.error('[audiences]', err);
   }

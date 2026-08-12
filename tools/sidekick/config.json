@@ -6,6 +6,7 @@
     {
       "id": "audiences",
       "title": "Audiences",
+      "event": "audiences",
       "environments": ["preview", "live"],
       "includePaths": ["**"]
     },
