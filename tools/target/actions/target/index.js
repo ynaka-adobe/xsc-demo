@@ -16,13 +16,14 @@ async function getToken(clientId, clientSecret) {
   return accessToken;
 }
 
-function targetRequest(method, path, tenant, clientId, token, body) {
+function targetRequest(method, path, tenant, clientId, token, body, version = 'v1') {
   const opts = {
     method,
     headers: {
       Authorization: `Bearer ${token}`,
       'X-Api-Key': clientId,
-      'Content-Type': body ? 'application/vnd.adobe.target.v1+json' : 'application/json',
+      Accept: `application/vnd.adobe.target.${version}+json`,
+      'Content-Type': body ? `application/vnd.adobe.target.${version}+json` : 'application/json',
     },
   };
   if (body) opts.body = JSON.stringify(body);
@@ -62,6 +63,9 @@ async function main(params) {
 
     } else if (resource === 'audience' && params.id) {
       data = await targetRequest('GET', `/audiences/${params.id}`, tenant, clientId, token);
+
+    } else if (resource === 'activity' && params.id && activityType) {
+      data = await targetRequest('GET', `/activities/${activityType}/${params.id}`, tenant, clientId, token, undefined, params.version || 'v1');
 
     } else if (resource === 'create-audience') {
       // Simple audience: match a URL/mbox query parameter equal to a value.
@@ -161,6 +165,23 @@ async function main(params) {
       };
 
       data = await targetRequest('POST', '/activities/xt', tenant, clientId, token, xtBody);
+
+    } else if (resource === 'update-mbox' && activityId && activityType && params.mbox) {
+      const version = params.version || 'v1';
+      const activity = await targetRequest('GET', `/activities/${activityType}/${activityId}`, tenant, clientId, token, undefined, version);
+
+      if (activity.httpStatus >= 400) {
+        return {
+          statusCode: activity.httpStatus,
+          body: JSON.stringify({ raw: activity, vecActivity: true }),
+        };
+      }
+
+      if (activity.locations?.mboxes) {
+        activity.locations.mboxes.forEach((loc) => { loc.name = params.mbox; });
+      }
+
+      data = await targetRequest('PUT', `/activities/${activityType}/${activityId}`, tenant, clientId, token, activity, version);
 
     } else if (resource === 'update-offer' && activityId && activityType && offerId) {
       const activity = await targetRequest('GET', `/activities/${activityType}/${activityId}`, tenant, clientId, token);

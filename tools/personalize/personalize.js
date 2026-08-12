@@ -7,9 +7,10 @@ import DA_SDK from 'https://da.live/nx/utils/sdk.js';
 
 const RUNTIME_URL = 'https://332794-868ceruleanwhale.adobeioruntime.net/api/v1/web/default/target-activities';
 const AUDIENCE_LIBRARY_URL = 'https://experience.adobe.com/#/@acsmarketing/target/audiences/audienceLibrary';
-// Activities are created on the global mbox; the target-offer block requests the
-// same mbox so it renders the personalized offer for the matching audience.
-const ACTIVITY_MBOX = 'target-global-mbox';
+// Default mbox for new activities; editable per-activity in the "Assign offers" step.
+// The target-offer block requests the same mbox so it renders the personalized
+// offer for the matching audience.
+const DEFAULT_MBOX = 'xsc-demo-personalize';
 
 // DA table markup for a `target-offer` block: name row, mbox row, default content.
 function targetOfferBlockHtml(mboxName) {
@@ -47,9 +48,11 @@ async function fetchOffers() {
 }
 
 // Create a Target XT activity with one experience per audience/offer pair.
-async function createActivity({ name, experiences }) {
+async function createActivity({
+  name, mbox, experiences,
+}) {
   const resp = await fetch(`${RUNTIME_URL}?${new URLSearchParams({
-    resource: 'create-activity', name, experiences: JSON.stringify(experiences),
+    resource: 'create-activity', name, mbox, experiences: JSON.stringify(experiences),
   })}`);
   const result = await resp.json().catch(() => ({}));
   if (!resp.ok || result.error) {
@@ -437,7 +440,7 @@ function renderMatrix(audiences, offers, assignments, onChange = () => {}) {
       intro.className = 'intro';
       intro.textContent = 'Pick an offer for each selected audience, then create the activity.';
 
-      // Footer: activity name + create button + status.
+      // Footer: activity name + mbox + create button + status.
       const footer = document.createElement('div');
       footer.className = 'activity-footer';
       const nameInput = document.createElement('input');
@@ -445,13 +448,18 @@ function renderMatrix(audiences, offers, assignments, onChange = () => {}) {
       nameInput.className = 'activity-name';
       nameInput.placeholder = 'Activity name';
       nameInput.value = `personalize-${new Date().toISOString().slice(0, 10)}`;
+      const mboxInput = document.createElement('input');
+      mboxInput.type = 'text';
+      mboxInput.className = 'activity-name';
+      mboxInput.placeholder = 'Mbox name';
+      mboxInput.value = DEFAULT_MBOX;
       const createBtn = document.createElement('button');
       createBtn.className = 'btn-primary';
       createBtn.textContent = 'Create activity →';
       createBtn.disabled = true;
       const status = document.createElement('p');
       status.className = 'form-status';
-      footer.append(nameInput, createBtn, status);
+      footer.append(nameInput, mboxInput, createBtn, status);
 
       // Enable create only once every selected audience has an offer.
       const allAssigned = () => selectedAudiences.every((a) => assignments.has(a.id));
@@ -459,6 +467,7 @@ function renderMatrix(audiences, offers, assignments, onChange = () => {}) {
 
       createBtn.addEventListener('click', async () => {
         const name = nameInput.value.trim();
+        const mbox = mboxInput.value.trim() || DEFAULT_MBOX;
         if (!name) {
           status.className = 'form-status error';
           status.textContent = 'Activity name is required.';
@@ -472,8 +481,8 @@ function renderMatrix(audiences, offers, assignments, onChange = () => {}) {
         status.className = 'form-status';
         status.textContent = 'Creating activity…';
         try {
-          const activity = await createActivity({ name, experiences });
-          showActivityCreated(activity, selectedAudiences, assignments);
+          const activity = await createActivity({ name, mbox, experiences });
+          showActivityCreated(activity, selectedAudiences, assignments, mbox);
         } catch (err) {
           createBtn.disabled = false;
           status.className = 'form-status error';
@@ -491,7 +500,7 @@ function renderMatrix(audiences, offers, assignments, onChange = () => {}) {
     }
   }
 
-  function showActivityCreated(activity, audiences, assignments) {
+  function showActivityCreated(activity, audiences, assignments, mbox) {
     document.body.innerHTML = '';
     const container = document.createElement('div');
     container.className = 'personalize';
@@ -542,10 +551,10 @@ function renderMatrix(audiences, offers, assignments, onChange = () => {}) {
         return;
       }
       daContext.actions.sendHTML(
-        targetMetadataBlockHtml(ACTIVITY_MBOX) + targetOfferBlockHtml(ACTIVITY_MBOX),
+        targetMetadataBlockHtml(mbox) + targetOfferBlockHtml(mbox),
       );
       status.className = 'form-status';
-      status.textContent = `Added a target-offer block + Target metadata (mbox "${ACTIVITY_MBOX}") to the page.`;
+      status.textContent = `Added a target-offer block + Target metadata (mbox "${mbox}") to the page.`;
     });
 
     const openLink = document.createElement('a');
