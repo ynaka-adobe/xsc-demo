@@ -8,3 +8,7 @@ helix-importer-ui
 *.bak
 .idea
 tools/target/config.json
+
+# local secrets
+.env
+.env.*
