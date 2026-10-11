@@ -200,6 +200,12 @@ export default async function decorate(block) {
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
+    // nav links should look like links, not the boilerplate's auto-decorated buttons
+    navSections.querySelectorAll('.button').forEach((link) => {
+      link.className = '';
+      const container = link.closest('.button-container');
+      if (container) container.className = '';
+    });
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
       navSection.addEventListener('click', () => {
