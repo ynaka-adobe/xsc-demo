@@ -124,3 +124,201 @@ main > .section:first-of-type:has(.hero.video) {
   margin-top: 0;
   padding-top: 0;
 }
+
+/* journeys panel: cards section moved into the video hero on "Get started" */
+main > .section.hero-journeys-source {
+  display: none;
+}
+
+@keyframes hero-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+@keyframes hero-bubble-up {
+  0% {
+    opacity: 0;
+    transform: translateY(70px) scale(0.94);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.01);
+  }
+}
+
+.hero.video .hero-leave {
+  animation: hero-fade-out 350ms ease-in forwards;
+}
+
+.hero.video .hero-card.hero-enter {
+  animation: hero-fade-up 450ms ease-out both;
+}
+
+.hero.video .hero-journeys[hidden] {
+  display: none;
+}
+
+.hero.video .hero-journeys {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+  width: 100%;
+  padding-top: 48px;
+}
+
+.hero.video .hero-back {
+  position: absolute;
+  z-index: 1;
+  top: 16px;
+  left: 16px;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(60 60 60 / 85%);
+  color: #fff;
+  cursor: pointer;
+}
+
+.hero.video .hero-back:hover {
+  background: rgb(90 90 90 / 90%);
+}
+
+.hero.video .hero-back svg {
+  width: 26px;
+  height: 26px;
+}
+
+.hero.video .hero-journeys picture {
+  position: static;
+  z-index: auto;
+}
+
+.hero.video .hero-journeys .default-content-wrapper img {
+  display: block;
+  width: auto;
+  height: clamp(42px, 3.7vw, 72px);
+}
+
+.hero.video .hero-journeys .default-content-wrapper p {
+  margin: 0 0 clamp(16px, 2vw, 34px);
+}
+
+.hero.video .hero-journeys h2 {
+  margin: 0;
+  font-family: poppins, var(--heading-font-family);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 5.4vw, 6.4rem);
+  line-height: 0.98;
+  color: #fff;
+}
+
+.hero.video .hero-journeys.hero-enter .default-content-wrapper {
+  animation: hero-fade-up 500ms ease-out both;
+}
+
+.hero.video .hero-journeys .cards ul {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 1.8vw, 34px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero.video .hero-journeys .cards li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(14px, 1.2vw, 24px);
+  border: 1px solid transparent;
+  border-radius: clamp(14px, 1.3vw, 24px);
+  background: #1c1c1c;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.hero.video .hero-journeys.hero-enter .cards li {
+  animation: hero-bubble-up 650ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(150ms + var(--i, 0) * 110ms);
+}
+
+.hero.video .hero-journeys .cards li:hover {
+  transform: translateY(-4px);
+  border-color: rgb(255 255 255 / 10%);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 50%);
+}
+
+.hero.video .hero-journeys .cards .cards-card-image {
+  line-height: 0;
+}
+
+.hero.video .hero-journeys .cards .cards-card-image img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 927 / 588;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #111;
+}
+
+.hero.video .hero-journeys .cards .cards-card-body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.hero.video .hero-journeys .cards .cards-card-body p {
+  margin: 0.5em 0 0;
+  line-height: 1.08;
+}
+
+.hero.video .hero-journeys .cards .cards-card-body a {
+  font-family: poppins, var(--heading-font-family);
+  font-weight: 800;
+  font-size: clamp(1.15rem, 1.9vw, 2.35rem);
+  line-height: 1.08;
+  color: #fff;
+  text-decoration: none;
+}
+
+.hero.video .hero-journeys .cards .cards-card-body a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+@media (width >= 600px) {
+  .hero.video .hero-journeys .cards ul {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (width >= 900px) {
+  .hero.video .hero-journeys {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+    gap: clamp(20px, 3vw, 60px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero.video .hero-leave,
+  .hero.video .hero-enter,
+  .hero.video .hero-enter * {
+    animation: none !important;
+  }
+}
