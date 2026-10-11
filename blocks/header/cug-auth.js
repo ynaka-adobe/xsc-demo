@@ -1,5 +1,5 @@
 // Header sign-in widget for Closed User Groups. The /auth/* routes are served by the
-// xsc-demo-cug edge function, so the widget only renders where that function runs.
+// xsc-demo-cug edge function, which only runs on AUTH_ORIGIN.
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -24,11 +24,11 @@ async function fetchSession() {
   }
 }
 
-function buildSignIn() {
+function buildSignIn(origin = '') {
   const returnTo = `${window.location.pathname}${window.location.search}`;
   return el('a', {
     class: 'cug-auth-signin',
-    href: `/auth/login?returnTo=${encodeURIComponent(returnTo)}`,
+    href: `${origin}/auth/login?returnTo=${encodeURIComponent(returnTo)}`,
   }, 'Sign in');
 }
 
@@ -100,14 +100,17 @@ function buildAccountMenu(user) {
   return wrapper;
 }
 
+// Where login actually runs (the edge function is only routed for this domain).
+const AUTH_ORIGIN = 'https://xsc-demo.ynaka-adobe.com';
+
 /**
- * Builds the sign-in / account widget, or returns null when /auth/me is unavailable
- * (e.g. on *.aem.page or localhost, where the edge function does not run).
+ * Builds the sign-in / account widget. Where /auth/me is unavailable (e.g. *.aem.page,
+ * *.aem.live, localhost), shows a Sign in button that goes to AUTH_ORIGIN instead.
  */
 export default async function buildAuthWidget() {
   const session = await fetchSession();
-  if (!session) return null;
   const container = el('div', { class: 'cug-auth' });
-  container.append(session.authenticated ? buildAccountMenu(session) : buildSignIn());
+  if (!session) container.append(buildSignIn(AUTH_ORIGIN));
+  else container.append(session.authenticated ? buildAccountMenu(session) : buildSignIn());
   return container;
 }
