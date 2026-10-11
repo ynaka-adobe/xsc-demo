@@ -119,3 +119,8 @@
     padding: 40px clamp(24px, 3vw, 56px);
   }
 }
+
+main > .section:first-of-type:has(.hero.video) {
+  margin-top: 0;
+  padding-top: 0;
+}
