@@ -1,5 +1,6 @@
 import { fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import buildAuthWidget from './cug-auth.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -211,13 +212,21 @@ export default async function decorate(block) {
     });
   }
 
-  const navTools = nav.querySelector('.nav-tools');
+  let navTools = nav.querySelector('.nav-tools');
   if (navTools) {
     const search = navTools.querySelector('a[href*="search"]');
     if (search && search.textContent === '') {
       search.setAttribute('aria-label', 'Search');
     }
+  } else {
+    navTools = document.createElement('div');
+    navTools.className = 'nav-tools';
+    nav.append(navTools);
   }
+
+  buildAuthWidget().then((widget) => {
+    if (widget) navTools.append(widget);
+  });
 
   // hamburger for mobile
   const hamburger = document.createElement('div');
