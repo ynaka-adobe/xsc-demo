@@ -208,7 +208,14 @@ export default async function decorate(block) {
     });
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
+      // nested lists inside a dropdown become labeled groups (e.g. Demos / Features)
+      const groups = navSection.querySelectorAll(':scope > ul > li:has(> ul)');
+      if (groups.length) {
+        navSection.querySelector(':scope > ul').classList.add('nav-mega');
+        groups.forEach((group) => group.classList.add('nav-group'));
+      }
+      navSection.addEventListener('click', (e) => {
+        if (e.target.closest('.nav-group') && !e.target.closest('a')) return;
         if (isDesktop.matches) {
           const expanded = navSection.getAttribute('aria-expanded') === 'true';
           toggleAllNavSections(navSections);
