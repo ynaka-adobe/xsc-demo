@@ -8,33 +8,19 @@
  *     [--groups partners,dealers] [--user 123:dummy] [--valid 3600] \
  *     [--asset urn:aaid:aem:...]...
  *
- * IMS_ADMIN_TOKEN is read from the environment or a .env file in the cwd.
- * In production this is a technical account that is an AEM admin.
+ * Auth (env or .env in the cwd): DM_CLIENT_ID + DM_CLIENT_SECRET + DM_SCOPES for the
+ * OAuth Server-to-Server tech account (AEM admin), or a ready IMS_ADMIN_TOKEN.
  */
 /* eslint-disable no-console */
 import { readFileSync } from 'node:fs';
 
-const TOKEN_URL = 'https://polaris-poc-polaris-new-deploy-ethos09-prod-va7-k-e42c23.cloud.adobe.io/adobe/assets/token';
 const DELIVERY = 'https://delivery-p154856-e1944736.adobeaemcloud.com';
-const STORAGE_CONTAINER = 'sa0154856019447360f400aa';
-const ROUTING = [
-  'namespace=ns-team-aem-cm-prd-n176867',
-  'cluster=ethos58-prod-va7',
-  'aemhost=assets.adobeaemcloud.com',
-  'bucketType=aemcs',
-  'region=va',
-  'bucket=delivery-p154856-e1944736',
-  'bucketId=p154856-e1944736',
-  'tier=delivery',
-  `storageContainer=${STORAGE_CONTAINER}`,
-  'tenant=cm-p154856-e1944736',
-  'program=154856',
-  'environment=1944736',
-  'environmentType=prod',
-  'imsOrg="21BD487E5F2280130A495ECC@AdobeOrg"',
-  'hipaa=0',
-].join(',');
-const DEFAULT_ASSETS = ['urn:aaid:aem:9b41cdc6-8555-4352-8a79-00f752547e5a'];
+const TOKEN_URL = `${DELIVERY}/adobe/assets/token`;
+const IMS_URL = 'https://ims-na1.adobelogin.com/ims/token/v3';
+const DEFAULT_ASSETS = [
+  'urn:aaid:aem:564d5f1f-3625-4f46-82c0-b01e6b145953', // partners/headless-is-here.png
+  'urn:aaid:aem:65897052-aa89-4ed8-9573-83cbf18467ec', // public-assets/centene_logo_2023.jpg
+];
 
 function loadEnv() {
   try {
@@ -60,6 +46,24 @@ function parseArgs(argv) {
   return opts;
 }
 
+// OAuth Server-to-Server: tech account (AEM admin) -> IMS access token
+async function getImsToken() {
+  const { DM_CLIENT_ID: id, DM_CLIENT_SECRET: secret, DM_SCOPES: scope } = process.env;
+  if (id && secret) {
+    const res = await fetch(IMS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'client_credentials', client_id: id, client_secret: secret, scope,
+      }),
+    });
+    const j = await res.json();
+    if (!res.ok) throw new Error(`IMS ${res.status}: ${JSON.stringify(j)}`);
+    return j.access_token;
+  }
+  return process.env.IMS_ADMIN_TOKEN?.replace(/^Bearer\s+/i, '').replace(/\\_/g, '_');
+}
+
 async function mintToken(imsToken, {
   id, username, groups, valid, attributes = {},
 }) {
@@ -68,9 +72,6 @@ async function mintToken(imsToken, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${imsToken}`,
-      'x-sky-dm-storage-container': STORAGE_CONTAINER,
-      'x-request-id': `xsc-demo-${Date.now()}`,
-      'x-adobe-routing': ROUTING,
     },
     body: JSON.stringify({
       subjectAttributes: {
@@ -85,7 +86,7 @@ async function mintToken(imsToken, {
 }
 
 async function check(assetId, token) {
-  const url = `${DELIVERY}/adobe/assets/${assetId}/metadata${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+  const url = `${DELIVERY}/adobe/assets/${assetId}/as/preview.webp?width=200${token ? `&token=${encodeURIComponent(token)}` : ''}`;
   const res = await fetch(url);
   const body = await res.text();
   let title = '';
@@ -98,9 +99,9 @@ async function check(assetId, token) {
 
 async function main() {
   loadEnv();
-  const ims = process.env.IMS_ADMIN_TOKEN?.replace(/^Bearer\s+/i, '').replace(/\\_/g, '_');
+  const ims = await getImsToken();
   if (!ims) {
-    console.error('Set IMS_ADMIN_TOKEN (env or .env) to an AEM admin IMS access token.');
+    console.error('Set DM_CLIENT_ID, DM_CLIENT_SECRET, DM_SCOPES (tech account) or IMS_ADMIN_TOKEN.');
     process.exit(1);
   }
   const opts = parseArgs(process.argv.slice(2));
@@ -108,8 +109,9 @@ async function main() {
   const resp = await mintToken(ims, {
     ...opts, attributes: { department: 'Engineering', countryCode: 'US' },
   });
-  const token = resp.token ?? resp.accessToken ?? resp.value;
-  console.log('Token response keys:', Object.keys(resp).join(', '));
+  const raw = resp.token ?? resp.accessToken ?? resp.value;
+  const token = raw && !raw.startsWith('sd:') ? `sd:${raw}` : raw;
+  console.log(`Token expires: ${resp.expiryTime ?? 'n/a'}`);
   if (!token) { console.log(JSON.stringify(resp, null, 2)); process.exit(1); }
 
   const results = await Promise.all(opts.assets.map(async (asset) => ({
