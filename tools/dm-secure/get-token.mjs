@@ -48,7 +48,10 @@ function parseArgs(argv) {
 
 // OAuth Server-to-Server: tech account (AEM admin) -> IMS access token
 async function getImsToken() {
-  const { DM_CLIENT_ID: id, DM_CLIENT_SECRET: secret, DM_SCOPES: scope } = process.env;
+  const {
+    DM_CLIENT_ID: id, DM_CLIENT_SECRET: secret, DM_SCOPES, DM_SCOPE,
+  } = process.env;
+  const scope = (DM_SCOPES || DM_SCOPE || '').replace(/\s+/g, '');
   if (id && secret) {
     const res = await fetch(IMS_URL, {
       method: 'POST',
