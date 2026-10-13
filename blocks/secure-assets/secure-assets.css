@@ -138,3 +138,14 @@
 .secure-assets .is-locked .secure-assets-state {
   color: #c9252d;
 }
+
+.secure-assets .secure-assets-embargo {
+  margin: 0 0 4px;
+  font-size: var(--body-font-size-xs);
+  font-weight: 600;
+  color: #6b21a8;
+}
+
+.secure-assets .is-embargoed .secure-assets-media {
+  background: repeating-linear-gradient(45deg, #f3e8ff 0 12px, #ede9fe 12px 24px);
+}

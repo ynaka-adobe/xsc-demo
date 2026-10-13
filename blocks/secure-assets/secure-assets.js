@@ -3,8 +3,11 @@
  *
  * Authoring: one row per asset.
  *   | Secure Assets |                                   |                  |
- *   | urn:aaid:aem:… (or delivery URL) | Title           | Partners / Public |
+ *   | urn:aaid:aem:… (or delivery URL) | Title | Access group label | On Time (optional ISO date) |
  *
+ * Access label "Public" or "All" means ungated. An On Time renders an embargo
+ * countdown; delivery returns 404 for everyone until then, so the card retries
+ * automatically once the embargo lifts.
  * Gets a delivery token for the signed-in user from /auth/dm-token (edge
  * function, groups from Okta) and appends ?token=sd:… to each asset URL.
  * Assets the user's groups can't access return 404 and show as locked.
@@ -70,11 +73,22 @@ function statusPanel(me, tokenInfo) {
   return panel;
 }
 
+function formatWhen(date) {
+  return date.toLocaleString([], {
+    month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
+  });
+}
+
+function countdown(ms) {
+  const s = Math.max(0, Math.round(ms / 1000));
+  return `${Math.floor(s / 60)}m ${String(s % 60).padStart(2, '0')}s`;
+}
+
 function card({
-  ref, title, access,
+  ref, title, access, onTime,
 }, delivery, token) {
   const li = el('li', 'secure-assets-card');
-  const gated = /partner|private|gated|restricted/i.test(access);
+  const gated = !!access && !/^(public|all)$/i.test(access);
   li.dataset.access = gated ? 'gated' : 'public';
   const media = el('div', 'secure-assets-media');
   const body = el('div', 'secure-assets-body');
@@ -88,23 +102,69 @@ function card({
     state.textContent = 'Missing asset URN';
     return li;
   }
-  const img = new Image();
-  img.alt = title;
-  img.loading = 'lazy';
-  img.onload = () => {
-    li.classList.add('is-delivered');
-    state.textContent = gated ? 'Delivered: your groups match this asset' : 'Delivered: public asset';
+
+  const on = onTime ? new Date(onTime) : null;
+  const embargo = on && !Number.isNaN(on.getTime()) ? on : null;
+  let embargoNote;
+  if (embargo) {
+    embargoNote = el('p', 'secure-assets-embargo');
+    body.insertBefore(embargoNote, state);
+  }
+  const embargoed = () => embargo && Date.now() < embargo.getTime();
+
+  let lock;
+  let retries = 0;
+  let timer;
+  const load = () => {
+    const img = new Image();
+    img.alt = title;
+    img.onload = () => {
+      clearInterval(timer);
+      lock?.remove();
+      li.classList.remove('is-locked', 'is-embargoed');
+      li.classList.add('is-delivered');
+      media.replaceChildren(img);
+      if (embargoNote) embargoNote.textContent = `Embargo lifted ${formatWhen(embargo)}`;
+      state.textContent = gated ? 'Delivered: your groups match this asset' : 'Delivered: public asset';
+    };
+    img.onerror = () => {
+      li.classList.add('is-locked');
+      if (!lock) {
+        lock = el('span', 'secure-assets-lock', '🔒');
+        media.replaceChildren(lock);
+      }
+      if (embargoed()) {
+        li.classList.add('is-embargoed');
+        state.textContent = 'Embargoed: 404 for everyone until the On Time';
+      } else if (embargo && retries < 12 && Date.now() - embargo.getTime() < 300000) {
+        retries += 1;
+        state.textContent = 'Embargo lifted, checking delivery…';
+        setTimeout(load, 15000);
+      } else {
+        li.classList.remove('is-embargoed');
+        state.textContent = token
+          ? 'Locked: 404 for your groups'
+          : 'Locked: sign in with an allowed group';
+      }
+    };
+    img.src = `${src}${src.includes('?') ? '&' : '?'}t=${Date.now()}`;
   };
-  img.onerror = () => {
-    li.classList.add('is-locked');
-    img.remove();
-    media.append(el('span', 'secure-assets-lock', '🔒'));
-    state.textContent = token
-      ? 'Locked: 404 for your groups'
-      : 'Locked: sign in with an allowed group';
-  };
-  img.src = src;
-  media.append(img);
+
+  if (embargo) {
+    const tick = () => {
+      const left = embargo.getTime() - Date.now();
+      if (left > 0) {
+        embargoNote.textContent = `Embargoed until ${formatWhen(embargo)} (${countdown(left)})`;
+      } else {
+        clearInterval(timer);
+        embargoNote.textContent = `On Time ${formatWhen(embargo)} reached`;
+        load();
+      }
+    };
+    tick();
+    if (embargoed()) timer = setInterval(tick, 1000);
+  }
+  load();
   return li;
 }
 
@@ -112,7 +172,9 @@ export default async function decorate(block) {
   const items = [...block.children].map((row) => {
     const cols = [...row.children].map((c) => c.textContent.trim());
     const link = row.querySelector('a')?.href;
-    return { ref: link || cols[0] || '', title: cols[1] || '', access: cols[2] || '' };
+    return {
+      ref: link || cols[0] || '', title: cols[1] || '', access: cols[2] || '', onTime: cols[3] || '',
+    };
   }).filter((i) => i.ref);
   block.textContent = '';
 
