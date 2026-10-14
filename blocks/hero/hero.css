@@ -36,6 +36,66 @@
   }
 }
 
+/* workshop variant: red Adobe banner, title + subtitle on the left */
+.hero.workshop {
+  display: flex;
+  align-items: center;
+  min-height: 228px;
+  padding: 40px 24px;
+  background: #fa0f00;
+  overflow: hidden;
+}
+
+.hero.workshop > div {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero.workshop img {
+  object-position: 87% 50%;
+}
+
+.hero.workshop h1,
+.hero.workshop h2,
+.hero.workshop p {
+  margin: 0;
+  max-width: 75%;
+  color: #fff;
+}
+
+.hero.workshop h1 {
+  font-size: var(--heading-font-size-xl);
+  letter-spacing: -0.02em;
+}
+
+.hero.workshop h2,
+.hero.workshop p {
+  margin-top: 8px;
+  font-family: var(--body-font-family);
+  font-size: var(--heading-font-size-s);
+  font-weight: 400;
+}
+
+@media (width < 900px) {
+  .hero.workshop img {
+    object-position: 100% 50%;
+    opacity: 0.35;
+  }
+
+  .hero.workshop h1,
+  .hero.workshop h2,
+  .hero.workshop p {
+    max-width: none;
+  }
+}
+
+@media (width >= 900px) {
+  .hero.workshop {
+    padding: 40px 32px;
+  }
+}
+
 /* video variant: full-bleed looping video with a floating dark card */
 @font-face {
   font-family: poppins;
