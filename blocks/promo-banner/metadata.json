@@ -1,0 +1,14 @@
+{
+  "variantName": "promo-banner",
+  "baseBlock": "fragment",
+  "version": "1.0.0",
+  "created": "2026-10-14T04:02:14.000Z",
+  "visualCharacteristics": {
+    "purpose": "scheduled-promo"
+  },
+  "contentPattern": {
+    "structure": "single cell: link to a promo-scheduler JSON sheet (start, end, fragment URL); the active fragment replaces the block",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

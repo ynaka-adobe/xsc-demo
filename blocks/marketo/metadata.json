@@ -1,0 +1,14 @@
+{
+  "variantName": "marketo",
+  "baseBlock": "marketo",
+  "version": "1.0.0",
+  "created": "2026-10-14T04:02:14.000Z",
+  "visualCharacteristics": {
+    "purpose": "form-embed"
+  },
+  "contentPattern": {
+    "structure": "single cell: Marketo form URL (https://engage-ab.marketo.com/?munchkinId=\u2026#/ds/mktform/<formId>)",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

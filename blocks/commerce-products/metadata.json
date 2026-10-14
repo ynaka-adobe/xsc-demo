@@ -1,0 +1,15 @@
+{
+  "variantName": "commerce-products",
+  "baseBlock": "commerce-products",
+  "version": "1.0.0",
+  "created": "2026-10-14T04:02:14.000Z",
+  "visualCharacteristics": {
+    "purpose": "product-grid",
+    "imagePattern": "thumbnail"
+  },
+  "contentPattern": {
+    "structure": "row 1: search term; row 2: number of products (optional, default 4). Products load live from Adobe Commerce GraphQL",
+    "buttonCount": 0,
+    "imageCount": 0
+  }
+}

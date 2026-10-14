@@ -1,0 +1,22 @@
+{
+  "variantName": "video",
+  "baseBlock": "video",
+  "version": "1.0.0",
+  "created": "2026-10-14T04:02:14.000Z",
+  "visualCharacteristics": {
+    "purpose": "video-embed",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "single cell: optional poster picture + YouTube/Vimeo/MP4 link",
+    "buttonCount": 0,
+    "imageCount": 1
+  },
+  "variants": [
+    {
+      "name": "Autoplay",
+      "class": "autoplay",
+      "description": "Plays muted and looping when scrolled into view; no play button over the poster."
+    }
+  ]
+}

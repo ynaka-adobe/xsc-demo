@@ -1,0 +1,24 @@
+{
+  "variantName": "cards",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-10-14T04:02:14.000Z",
+  "contentPattern": {
+    "structure": "per card: image + body (title, description, link)",
+    "imageCount": 1
+  },
+  "variants": [
+    {
+      "name": "Journeys",
+      "class": "journeys",
+      "description": "Journey tiles (image + linked title + optional description). Shown as the pop-out journeys panel of a video Hero on the same page."
+    }
+  ],
+  "usage": {
+    "pagesUsing": [
+      "index"
+    ],
+    "reuseCount": 1,
+    "lastUsed": "2026-10-14T04:02:14.000Z"
+  }
+}

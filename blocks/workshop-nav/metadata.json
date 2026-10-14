@@ -1,0 +1,21 @@
+{
+  "variantName": "workshop-nav",
+  "baseBlock": "workshop-nav",
+  "version": "1.0.0",
+  "created": "2026-10-14T04:02:14.000Z",
+  "visualCharacteristics": {
+    "purpose": "sticky-sidebar-nav"
+  },
+  "contentPattern": {
+    "structure": "empty block (nav auto-built from the section's h2/h3 headings); optional links are added under Lessons",
+    "buttonCount": 0,
+    "imageCount": 0
+  },
+  "usage": {
+    "pagesUsing": [
+      "workshops/agentic-development"
+    ],
+    "reuseCount": 1,
+    "lastUsed": "2026-10-14T04:02:14.000Z"
+  }
+}

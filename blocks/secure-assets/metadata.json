@@ -1,0 +1,22 @@
+{
+  "variantName": "secure-assets",
+  "baseBlock": "secure-assets",
+  "version": "1.0.0",
+  "created": "2026-10-14T04:02:14.000Z",
+  "visualCharacteristics": {
+    "purpose": "gated-asset-gallery",
+    "imagePattern": "thumbnail"
+  },
+  "contentPattern": {
+    "structure": "per row: asset URN | title | access group | On Time (optional ISO date, embargo countdown)",
+    "buttonCount": 0,
+    "imageCount": 0
+  },
+  "usage": {
+    "pagesUsing": [
+      "aem-assets/dynamic-media-secure-delivery"
+    ],
+    "reuseCount": 1,
+    "lastUsed": "2026-10-14T04:02:14.000Z"
+  }
+}

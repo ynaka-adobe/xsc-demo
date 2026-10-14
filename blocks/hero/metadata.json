@@ -1,0 +1,35 @@
+{
+  "variantName": "hero",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "created": "2026-10-14T04:02:14.000Z",
+  "visualCharacteristics": {
+    "purpose": "hero",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "single cell: image + h1 + description + CTA; video variant takes an .mp4/.webm link as a background video",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "variants": [
+    {
+      "name": "Workshop",
+      "class": "workshop",
+      "description": "Workshop/event hero: banner image row stacked above a title + subtitle row."
+    },
+    {
+      "name": "Video",
+      "class": "video",
+      "description": "Background-video hero. Applied automatically when the hero holds an .mp4/.webm link; pairs with a Cards (journeys) section to open a journeys panel."
+    }
+  ],
+  "usage": {
+    "pagesUsing": [
+      "index",
+      "workshops/agentic-development"
+    ],
+    "reuseCount": 2,
+    "lastUsed": "2026-10-14T04:02:14.000Z"
+  }
+}
