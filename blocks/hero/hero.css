@@ -37,9 +37,14 @@
 }
 
 /* workshop variant: red Adobe banner, title + subtitle on the left */
+.hero-container:has(.hero.workshop) {
+  margin-bottom: 0;
+}
+
 .hero.workshop {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   min-height: 228px;
   padding: 40px 24px;
   background: #f00;
@@ -79,9 +84,8 @@
 }
 
 @media (width < 900px) {
-  .hero.workshop img {
-    object-position: 100% 50%;
-    opacity: 0.35;
+  .hero.workshop picture {
+    display: none;
   }
 
   .hero.workshop h1,
