@@ -42,8 +42,9 @@
   align-items: center;
   min-height: 228px;
   padding: 40px 24px;
-  background: #fa0f00;
+  background: #f00;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .hero.workshop > div {
