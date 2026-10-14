@@ -1,5 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation } from '../../ue/scripts/ue-utils.js';
 
 export default function decorate(block) {
   /* change to ul, li */
