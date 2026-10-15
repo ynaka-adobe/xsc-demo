@@ -1,77 +1,82 @@
 <html><body style="margin:0;background:#fff">
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980" font-family="Adobe Clean, Helvetica, Arial, sans-serif">
-<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
-<style>.t{font-size:22px;font-weight:700;fill:#111}.s{font-size:16px;fill:#333}.l{font-size:14px;font-weight:700;fill:#666;letter-spacing:2px}.w{fill:#fff}</style>
-<!-- users -->
-<text x="40" y="45" class="l">USERS</text>
-<rect x="450" y="20" width="500" height="70" rx="12" fill="#f5f5f5" stroke="#999"/>
-<text x="700" y="52" text-anchor="middle" class="t">Browsers · Mobile · Partners</text>
-<text x="700" y="76" text-anchor="middle" class="s">one domain, one experience</text>
-<line x1="700" y1="90" x2="700" y2="128" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
-<!-- edge -->
-<text x="40" y="160" class="l">EDGE</text>
-<rect x="200" y="130" width="1000" height="90" rx="12" fill="#2c2c2c"/>
-<text x="700" y="168" text-anchor="middle" class="t w">CDN / Edge Router (Akamai · Cloudflare · Fastly)</text>
-<text x="700" y="196" text-anchor="middle" class="s w">Routes per template / interaction type — not per domain</text>
-<line x1="450" y1="220" x2="400" y2="268" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
-<line x1="950" y1="220" x2="1000" y2="268" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
-<text x="405" y="250" text-anchor="end" class="s">/products, /about, /news …</text>
-<text x="995" y="250" class="s">/catalog, /configure, /account …</text>
-<!-- paths -->
-<text x="40" y="300" class="l">EXPERIENCE</text>
-<rect x="160" y="270" width="500" height="150" rx="12" fill="#eb1000"/>
-<text x="410" y="312" text-anchor="middle" class="t w">Edge Delivery Services</text>
-<text x="410" y="340" text-anchor="middle" class="s w">Content pages: marketing, editorial,</text>
-<text x="410" y="362" text-anchor="middle" class="s w">landing, support, campaigns</text>
-<text x="410" y="396" text-anchor="middle" class="s w">DA / UE authoring · 100 Lighthouse</text>
-<rect x="740" y="270" width="500" height="150" rx="12" fill="#1473e6"/>
-<text x="990" y="312" text-anchor="middle" class="t w">Headless App (React / Next / SPA)</text>
-<text x="990" y="340" text-anchor="middle" class="s w">Interaction pages: catalog, configurator,</text>
-<text x="990" y="362" text-anchor="middle" class="s w">quote, account, checkout</text>
-<text x="990" y="396" text-anchor="middle" class="s w">existing investment preserved</text>
-<!-- shared services band -->
-<text x="40" y="470" class="l">SHARED</text>
-<rect x="160" y="445" width="1080" height="120" rx="12" fill="#fff4e5" stroke="#e68619" stroke-width="2"/>
-<g class="s">
-<rect x="180" y="465" width="245" height="80" rx="8" fill="#fff" stroke="#e68619"/>
-<text x="302" y="497" text-anchor="middle" class="t" style="font-size:18px">Header / Footer</text>
-<text x="302" y="522" text-anchor="middle">fragment API · web comp.</text>
-<rect x="440" y="465" width="245" height="80" rx="8" fill="#fff" stroke="#e68619"/>
-<text x="562" y="497" text-anchor="middle" class="t" style="font-size:18px">Identity / SSO</text>
-<text x="562" y="522" text-anchor="middle">Okta · Entra · shared session</text>
-<rect x="700" y="465" width="245" height="80" rx="8" fill="#fff" stroke="#e68619"/>
-<text x="822" y="497" text-anchor="middle" class="t" style="font-size:18px">Analytics contract</text>
-<text x="822" y="522" text-anchor="middle">data layer · RUM / CWV</text>
-<rect x="960" y="465" width="260" height="80" rx="8" fill="#fff" stroke="#e68619"/>
-<text x="1090" y="497" text-anchor="middle" class="t" style="font-size:18px">Design tokens</text>
-<text x="1090" y="522" text-anchor="middle">CSS vars · fonts · icons</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000" font-family="Adobe Clean, Helvetica, Arial, sans-serif">
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker>
+<marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ccc"/></marker></defs>
+<style>.t{font-size:21px;font-weight:700;fill:#111}.s{font-size:15px;fill:#333}.l{font-size:14px;font-weight:700;fill:#666;letter-spacing:2px}.w{fill:#fff}.g{fill:#ccc}.i{font-style:italic}</style>
+<text x="30" y="50" class="l">USERS</text>
+<rect x="200" y="20" width="1170" height="50" rx="10" fill="#f5f5f5" stroke="#999"/>
+<text x="785" y="51" text-anchor="middle" class="t" style="font-size:19px">Browsers · Mobile · Partners — one domain</text>
+<line x1="785" y1="70" x2="785" y2="98" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+<!-- EDGE band -->
+<text x="30" y="210" class="l">EDGE</text>
+<rect x="200" y="100" width="1170" height="230" rx="12" fill="#2c2c2c"/>
+<rect x="220" y="115" width="800" height="70" rx="8" fill="#4a4a4a"/>
+<text x="620" y="144" text-anchor="middle" class="t w" style="font-size:19px">CDN / edge router: route-level rendering decision</text>
+<text x="620" y="168" text-anchor="middle" class="s w">Per page template / interaction type — not per domain or property</text>
+<rect x="1040" y="115" width="310" height="70" rx="8" fill="#f5f5f5"/>
+<text x="1195" y="144" text-anchor="middle" class="t" style="font-size:18px">RUM / Core Web Vitals</text>
+<text x="1195" y="168" text-anchor="middle" class="s">monitors both paths</text>
+<line x1="330" y1="185" x2="330" y2="213" stroke="#ccc" stroke-width="2" marker-end="url(#b)"/>
+<text x="342" y="205" class="s g i">content routes</text>
+<rect x="220" y="215" width="590" height="100" rx="8" fill="#eb1000"/>
+<text x="515" y="250" text-anchor="middle" class="t w">Edge Delivery Services — edge-based front end</text>
+<text x="515" y="276" text-anchor="middle" class="s w">Edge-resident microservices, no runtime to host.</text>
+<text x="515" y="298" text-anchor="middle" class="s w">Composes content pages: marketing, editorial, landing</text>
+<line x1="960" y1="185" x2="960" y2="378" stroke="#ccc" stroke-width="2" marker-end="url(#a)"/>
+<text x="972" y="250" class="s g i">interaction routes</text>
+<!-- ORIGIN -->
+<text x="30" y="410" class="l">ORIGIN /</text><text x="30" y="430" class="l">RUNTIME</text>
+<rect x="220" y="370" width="250" height="90" rx="10" fill="#f5f5f5" stroke="#999"/>
+<text x="345" y="408" text-anchor="middle" class="t" style="font-size:18px">Content store</text>
+<text x="345" y="434" text-anchor="middle" class="s">AEM / DA authored content</text>
+<rect x="490" y="370" width="250" height="90" rx="10" fill="#f5f5f5" stroke="#999"/>
+<text x="615" y="408" text-anchor="middle" class="t" style="font-size:18px">Code store</text>
+<text x="615" y="434" text-anchor="middle" class="s">GitHub: blocks, styles, scripts</text>
+<line x1="345" y1="370" x2="345" y2="318" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+<line x1="615" y1="370" x2="615" y2="318" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+<text x="480" y="352" text-anchor="middle" class="s i" style="fill:#666">reach back</text>
+<rect x="840" y="380" width="530" height="110" rx="10" fill="#1473e6"/>
+<text x="1105" y="418" text-anchor="middle" class="t w">Headless app (Next.js / React / SPA)</text>
+<text x="1105" y="444" text-anchor="middle" class="s w">Hosted runtime. Interaction pages: catalog, configurator,</text>
+<text x="1105" y="466" text-anchor="middle" class="s w">quote, account. Existing headless investment preserved.</text>
+<line x1="790" y1="315" x2="790" y2="528" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+<line x1="1105" y1="490" x2="1105" y2="528" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+<!-- SHARED -->
+<text x="30" y="580" class="l">SHARED</text>
+<rect x="200" y="530" width="1170" height="120" rx="12" fill="#fff4e5" stroke="#e68619" stroke-width="2"/>
+<g text-anchor="middle">
+<rect x="215" y="547" width="270" height="86" rx="8" fill="#fff" stroke="#e68619"/>
+<text x="350" y="580" class="t" style="font-size:17px">Header / Footer</text>
+<text x="350" y="604" class="s">one federated source, both paths</text>
+<rect x="500" y="547" width="300" height="86" rx="8" fill="#fff" stroke="#e68619"/>
+<text x="650" y="575" class="t" style="font-size:17px">Bi-directional sharing</text>
+<text x="650" y="598" class="s">AEM content in the headless app,</text>
+<text x="650" y="618" class="s">app components in AEM pages</text>
+<rect x="815" y="547" width="265" height="86" rx="8" fill="#fff" stroke="#e68619"/>
+<text x="947" y="580" class="t" style="font-size:17px">Identity / SSO</text>
+<text x="947" y="604" class="s">one IdP, shared session</text>
+<rect x="1095" y="547" width="260" height="86" rx="8" fill="#fff" stroke="#e68619"/>
+<text x="1225" y="580" class="t" style="font-size:17px">Analytics contract</text>
+<text x="1225" y="604" class="s">shared tagging, both paths</text>
 </g>
-<line x1="410" y1="420" x2="410" y2="443" stroke="#555" stroke-width="2"/>
-<line x1="990" y1="420" x2="990" y2="443" stroke="#555" stroke-width="2"/>
-<line x1="410" y1="565" x2="410" y2="618" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
-<line x1="990" y1="565" x2="990" y2="618" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
-<line x1="500" y1="565" x2="900" y2="618" stroke="#555" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#a)"/>
-<line x1="900" y1="565" x2="500" y2="618" stroke="#555" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#a)"/>
-<!-- data -->
-<text x="40" y="650" class="l">DATA / API</text>
-<rect x="160" y="620" width="500" height="120" rx="12" fill="#e8f5e9" stroke="#2d9d78" stroke-width="2"/>
-<text x="410" y="660" text-anchor="middle" class="t">Content API</text>
-<text x="410" y="688" text-anchor="middle" class="s">AEM Content Fragments (GraphQL / OpenAPI)</text>
-<text x="410" y="712" text-anchor="middle" class="s">EDS .json sheets · query-index · fragments</text>
-<rect x="740" y="620" width="500" height="120" rx="12" fill="#e8f5e9" stroke="#2d9d78" stroke-width="2"/>
-<text x="990" y="660" text-anchor="middle" class="t">Product / Commerce API</text>
-<text x="990" y="688" text-anchor="middle" class="s">API Mesh + Catalog Service</text>
-<text x="990" y="712" text-anchor="middle" class="s">(or Adobe Commerce Optimizer)</text>
-<line x1="410" y1="740" x2="410" y2="798" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
-<line x1="990" y1="740" x2="990" y2="798" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+<line x1="785" y1="650" x2="785" y2="688" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+<!-- DATA -->
+<text x="30" y="740" class="l">DATA / API</text>
+<rect x="200" y="690" width="1170" height="100" rx="12" fill="#e8f5e9" stroke="#2d9d78" stroke-width="2"/>
+<text x="490" y="730" text-anchor="middle" class="t" style="font-size:19px">Content API</text>
+<text x="490" y="756" text-anchor="middle" class="s">Content Fragments · EDS .json sheets · query-index</text>
+<line x1="785" y1="705" x2="785" y2="775" stroke="#2d9d78" stroke-dasharray="4 4"/>
+<text x="1080" y="730" text-anchor="middle" class="t" style="font-size:19px">Product / Commerce API</text>
+<text x="1080" y="756" text-anchor="middle" class="s">same catalog, pricing, account data to both paths</text>
+<line x1="785" y1="790" x2="785" y2="828" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
 <!-- SoR -->
-<text x="40" y="830" class="l">SYSTEMS OF</text><text x="40" y="850" class="l">RECORD</text>
-<rect x="160" y="800" width="1080" height="110" rx="12" fill="#f5f5f5" stroke="#999"/>
-<g class="s" text-anchor="middle">
-<text x="295" y="850" class="t" style="font-size:18px">AEM Sites / DA</text><text x="295" y="876">content</text>
-<text x="565" y="850" class="t" style="font-size:18px">AEM Assets / DM</text><text x="565" y="876">media, renditions</text>
-<text x="835" y="850" class="t" style="font-size:18px">Commerce engine</text><text x="835" y="876">SAP · WCS · SFCC · Magento</text>
-<text x="1105" y="850" class="t" style="font-size:18px">PIM / ERP</text><text x="1105" y="876">product, pricing, inventory</text>
-</g>
-<text x="700" y="950" text-anchor="middle" class="s" style="fill:#666">Both experience paths consume the same APIs — no duplicated content, product data, chrome, identity or tagging.</text>
+<text x="30" y="870" class="l">SYSTEMS OF</text><text x="30" y="890" class="l">RECORD</text>
+<rect x="200" y="830" width="600" height="90" rx="10" fill="#fff9c4" stroke="#c9a400" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="500" y="866" text-anchor="middle" class="t" style="font-size:18px">Commerce interface layer (optional)</text>
+<text x="500" y="892" text-anchor="middle" class="s">Adobe Edge Commerce: API Mesh + Catalog Service</text>
+<line x1="800" y1="875" x2="838" y2="875" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+<rect x="840" y="830" width="530" height="90" rx="10" fill="#f5f5f5" stroke="#999"/>
+<text x="1105" y="866" text-anchor="middle" class="t" style="font-size:18px">Commerce engine · PIM · ERP</text>
+<text x="1105" y="892" text-anchor="middle" class="s">stay systems of record — not replaced</text>
+<text x="785" y="970" text-anchor="middle" class="s" style="fill:#666">EDS is edge-first (no runtime); the headless app is the runtime front end. Both consume the same shared services and APIs.</text>
 </svg></body></html>
