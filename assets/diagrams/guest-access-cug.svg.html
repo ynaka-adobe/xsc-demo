@@ -1,0 +1,109 @@
+<html><body style="margin:0;background:#fff">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" font-family="Adobe Clean, Helvetica, Arial, sans-serif">
+<defs>
+<marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker>
+<marker id="g" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0b8a4a"/></marker>
+<marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3b63fb"/></marker>
+<marker id="r" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d31510"/></marker>
+</defs>
+<style>.t{font-size:20px;font-weight:700;fill:#111}.s{font-size:15px;fill:#333}.l{font-size:14px;font-weight:700;fill:#666;letter-spacing:2px}.w{fill:#fff}.c{font-family:Menlo,monospace;font-size:14px}</style>
+
+<text x="40" y="50" class="l">WHO</text>
+<text x="350" y="50" class="l">HOW THEY GET A SESSION</text>
+<text x="700" y="50" class="l">EDGE FUNCTION (CUG ENFORCEMENT)</text>
+<text x="1080" y="50" class="l">CONTENT</text>
+
+<!-- personas -->
+<rect x="40" y="80" width="260" height="120" rx="10" fill="#e6f6ee" stroke="#0b8a4a" stroke-width="2"/>
+<text x="170" y="125" text-anchor="middle" class="t">Customer guest</text>
+<text x="170" y="152" text-anchor="middle" class="s">has a code from</text>
+<text x="170" y="172" text-anchor="middle" class="s">their Adobe team</text>
+
+<rect x="40" y="260" width="260" height="120" rx="10" fill="#e8edff" stroke="#3b63fb" stroke-width="2"/>
+<text x="170" y="305" text-anchor="middle" class="t">Adobe employee</text>
+<text x="170" y="332" text-anchor="middle" class="s">any XSC, SE, account team</text>
+
+<rect x="40" y="440" width="260" height="120" rx="10" fill="#f5f5f5" stroke="#999" stroke-width="2"/>
+<text x="170" y="485" text-anchor="middle" class="t">Anonymous</text>
+<text x="170" y="512" text-anchor="middle" class="s">no session yet</text>
+
+<!-- session sources -->
+<rect x="350" y="80" width="300" height="120" rx="10" fill="#fff" stroke="#0b8a4a" stroke-width="2"/>
+<text x="500" y="115" text-anchor="middle" class="t">Access code</text>
+<text x="500" y="142" text-anchor="middle" class="s c">POST /auth/code</text>
+<text x="500" y="166" text-anchor="middle" class="s">checked against codes sheet</text>
+<text x="500" y="186" text-anchor="middle" class="s">(code · customer · path · expires)</text>
+
+<rect x="350" y="260" width="300" height="120" rx="10" fill="#fff" stroke="#3b63fb" stroke-width="2"/>
+<text x="500" y="295" text-anchor="middle" class="t">IdP sign-in (OIDC)</text>
+<text x="500" y="322" text-anchor="middle" class="s">Okta today</text>
+<text x="500" y="344" text-anchor="middle" class="s">Adobe SSO / product OIDC next</text>
+
+<rect x="350" y="440" width="300" height="120" rx="10" fill="#fff" stroke="#999" stroke-width="2"/>
+<text x="500" y="478" text-anchor="middle" class="t">Landing page</text>
+<text x="500" y="505" text-anchor="middle" class="s c">/customer-demo</text>
+<text x="500" y="530" text-anchor="middle" class="s">code form + employee sign-in</text>
+
+<line x1="300" y1="140" x2="345" y2="140" stroke="#0b8a4a" stroke-width="3" marker-end="url(#g)"/>
+<line x1="300" y1="320" x2="345" y2="320" stroke="#3b63fb" stroke-width="3" marker-end="url(#b)"/>
+<line x1="300" y1="500" x2="345" y2="500" stroke="#555" stroke-width="3" marker-end="url(#a)"/>
+
+<!-- edge function -->
+<rect x="700" y="80" width="330" height="480" rx="12" fill="#2c2c2c"/>
+<rect x="720" y="95" width="290" height="110" rx="8" fill="#0b8a4a"/>
+<text x="865" y="127" text-anchor="middle" class="t w" style="font-size:18px">Guest session</text>
+<text x="865" y="153" text-anchor="middle" class="s w">path check: only the granted</text>
+<text x="865" y="175" text-anchor="middle" class="s w">customer folder(s), until expiry</text>
+<rect x="720" y="265" width="290" height="110" rx="8" fill="#3b63fb"/>
+<text x="865" y="297" text-anchor="middle" class="t w" style="font-size:18px">Employee session</text>
+<text x="865" y="323" text-anchor="middle" class="s w">group check: "employees"</text>
+<text x="865" y="345" text-anchor="middle" class="s w">matches any IdP user</text>
+<rect x="720" y="395" width="290" height="115" rx="8" fill="#4a4a4a"/>
+<text x="865" y="422" text-anchor="middle" class="t w" style="font-size:17px">Per request: CUG headers</text>
+<text x="865" y="448" text-anchor="middle" class="c" style="fill:#fff">x-aem-cug-required</text>
+<text x="865" y="470" text-anchor="middle" class="c" style="fill:#fff">x-aem-cug-groups: employees</text>
+<text x="865" y="492" text-anchor="middle" class="c" style="fill:#fff">x-aem-cug-login-path</text>
+<text x="865" y="535" text-anchor="middle" class="s w">No session on a gated page → landing page</text>
+
+<line x1="650" y1="140" x2="715" y2="140" stroke="#0b8a4a" stroke-width="3" marker-end="url(#g)"/>
+<line x1="650" y1="320" x2="715" y2="320" stroke="#3b63fb" stroke-width="3" marker-end="url(#b)"/>
+<path d="M700,530 L655,530" stroke="#555" stroke-width="2" stroke-dasharray="6 5" fill="none" marker-end="url(#a)"/>
+
+<!-- content -->
+<rect x="1080" y="80" width="290" height="150" rx="10" fill="#e6f6ee" stroke="#0b8a4a" stroke-width="2"/>
+<text x="1225" y="112" text-anchor="middle" class="s c" style="font-weight:700">/customer-demo/&lt;customer&gt;</text>
+<text x="1225" y="140" text-anchor="middle" class="s">current state · target state</text>
+<text x="1225" y="162" text-anchor="middle" class="s">demo links · deck</text>
+<text x="1225" y="194" text-anchor="middle" class="s" style="font-weight:700">guest (own customer) + employees</text>
+
+<rect x="1080" y="260" width="290" height="150" rx="10" fill="#e8edff" stroke="#3b63fb" stroke-width="2"/>
+<text x="1225" y="292" text-anchor="middle" class="s c" style="font-weight:700">/internal/**</text>
+<text x="1225" y="320" text-anchor="middle" class="s">opp timeline · deal notes</text>
+<text x="1225" y="342" text-anchor="middle" class="s">codes sheet</text>
+<text x="1225" y="374" text-anchor="middle" class="s" style="font-weight:700">employees only</text>
+
+<rect x="1080" y="440" width="290" height="120" rx="10" fill="#fff" stroke="#999" stroke-width="2"/>
+<text x="1225" y="478" text-anchor="middle" class="s c" style="font-weight:700">everything else</text>
+<text x="1225" y="506" text-anchor="middle" class="s">public demos, features,</text>
+<text x="1225" y="528" text-anchor="middle" class="s">workshops</text>
+
+<line x1="1010" y1="140" x2="1075" y2="140" stroke="#0b8a4a" stroke-width="3" marker-end="url(#g)"/>
+<line x1="1010" y1="185" x2="1075" y2="290" stroke="#d31510" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#r)"/>
+<text x="1012" y="232" class="s" style="fill:#d31510;font-weight:700;font-size:13px">403</text>
+<line x1="1010" y1="285" x2="1075" y2="215" stroke="#3b63fb" stroke-width="3" marker-end="url(#b)"/>
+<line x1="1010" y1="335" x2="1075" y2="335" stroke="#3b63fb" stroke-width="3" marker-end="url(#b)"/>
+
+<!-- origin band -->
+<text x="40" y="660" class="l">ORIGIN</text>
+<rect x="200" y="610" width="1170" height="110" rx="12" fill="#f5f5f5" stroke="#999"/>
+<text x="785" y="650" text-anchor="middle" class="t">Edge Delivery origin (.aem.live / .aem.page) — site authentication</text>
+<text x="785" y="680" text-anchor="middle" class="s">Reachable only with the site token (sent by the edge function) or an Adobe login. No way around the gate.</text>
+<text x="785" y="704" text-anchor="middle" class="s">Codes sheet is read from the locked preview origin, so codes are never published.</text>
+<line x1="865" y1="560" x2="865" y2="605" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- footer -->
+<rect x="200" y="750" width="1170" height="110" rx="12" fill="#fff" stroke="#ddd"/>
+<text x="785" y="788" text-anchor="middle" class="t" style="font-size:18px">Reused from Closed User Groups: CUG sheet → headers, edge function, session cookie, login-path redirect</text>
+<text x="785" y="820" text-anchor="middle" class="s">New: access code as a second way to get a session · path-scoped guest check · "employees" group keyword</text>
+<text x="785" y="844" text-anchor="middle" class="s">Gating is defined once in the CUG sheet. The code is just another key to a CUG session, scoped to one customer.</text>
+</svg></body></html>
