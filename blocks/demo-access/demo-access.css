@@ -34,6 +34,11 @@
   text-transform: uppercase;
 }
 
+.demo-access .demo-access-row input::placeholder {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
 .demo-access .demo-access-row input[aria-invalid='true'] {
   border-color: #d31510;
 }
