@@ -48,7 +48,8 @@ function buildAccountMenu(user) {
     el('span', { class: 'cug-auth-name' }, user.name || user.email || 'Account'),
   );
 
-  const groups = el('ul', { class: 'cug-auth-groups', 'aria-label': 'Groups' });
+  const label = user.guest ? 'Demo access' : 'Groups';
+  const groups = el('ul', { class: 'cug-auth-groups', 'aria-label': label });
   (user.groups || []).forEach((g) => groups.append(el('li', {}, g)));
   if (!groups.children.length) groups.append(el('li', { class: 'empty' }, 'No groups'));
 
@@ -63,10 +64,10 @@ function buildAccountMenu(user) {
         'div',
         {},
         el('p', { class: 'cug-auth-fullname' }, user.name || 'Signed in'),
-        el('p', { class: 'cug-auth-email' }, user.email || ''),
+        el('p', { class: 'cug-auth-email' }, user.guest ? 'Access code' : user.email || ''),
       ),
     ),
-    el('p', { class: 'cug-auth-label' }, 'Groups'),
+    el('p', { class: 'cug-auth-label' }, label),
     groups,
     el(
       'ul',

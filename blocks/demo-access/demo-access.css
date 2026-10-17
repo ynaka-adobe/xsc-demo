@@ -1,0 +1,109 @@
+.demo-access {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.demo-access .demo-access-panel {
+  margin-top: 24px;
+  padding: 32px;
+  border: 1px solid #e1e1e1;
+  border-radius: 12px;
+  background: var(--light-color);
+}
+
+.demo-access .demo-access-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.demo-access .demo-access-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.demo-access .demo-access-row input {
+  flex: 1 1 220px;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid #b3b3b3;
+  border-radius: 8px;
+  font: inherit;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.demo-access .demo-access-row input[aria-invalid='true'] {
+  border-color: #d31510;
+}
+
+.demo-access .demo-access-row .button {
+  margin: 0;
+}
+
+.demo-access .demo-access-error {
+  margin: 8px 0 0;
+  color: #d31510;
+  font-size: var(--body-font-size-xs);
+}
+
+.demo-access .demo-access-employee {
+  margin: 24px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid #e1e1e1;
+  font-size: var(--body-font-size-xs);
+}
+
+.demo-access .demo-access-granted h3,
+.demo-access .demo-access-employee-view h3 {
+  margin-top: 0;
+}
+
+.demo-access .demo-access-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-access .demo-access-list .button {
+  margin: 0;
+}
+
+.demo-access .demo-access-table {
+  overflow-x: auto;
+}
+
+.demo-access table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--body-font-size-xs);
+}
+
+.demo-access th,
+.demo-access td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e1e1e1;
+  text-align: left;
+  vertical-align: top;
+}
+
+.demo-access .demo-access-status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.demo-access .demo-access-status.active {
+  background: #d6f5e3;
+  color: #0b6b3a;
+}
+
+.demo-access .demo-access-status.expired {
+  background: #fde2e1;
+  color: #a1110c;
+}
