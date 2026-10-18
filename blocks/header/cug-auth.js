@@ -95,7 +95,6 @@ function buildAccountMenu(user) {
     el(
       'ul',
       { class: 'cug-auth-links' },
-      el('li', {}, el('a', { href: '/auth/me', target: '_blank', rel: 'noopener' }, 'Session details')),
       el('li', {}, el('a', { href: '/auth/logout', class: 'cug-auth-signout' }, 'Sign out')),
     ),
   );
