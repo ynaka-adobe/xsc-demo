@@ -459,6 +459,18 @@ header nav .cug-auth-links a.cug-auth-signout {
   color: #c62828;
 }
 
+header nav .cug-auth .cug-auth-internal li a {
+  display: block;
+  padding: 6px 4px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+header nav .cug-auth .cug-auth-internal li a:hover {
+  background-color: var(--light-color);
+}
+
 @media (width < 900px) {
   header nav .cug-auth-name {
     display: none;

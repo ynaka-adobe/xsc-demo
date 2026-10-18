@@ -32,6 +32,29 @@ function buildSignIn(origin = '') {
   }, 'Sign in');
 }
 
+// Employee-only links, authored in DA at /internal/menu. Guests and anonymous users
+// can't read /internal, so the fetch fails and the section is skipped.
+async function buildInternalLinks(user) {
+  if (user.guest) return null;
+  try {
+    const resp = await fetch('/internal/menu.plain.html', { credentials: 'same-origin' });
+    if (!resp.ok) return null;
+    const doc = new DOMParser().parseFromString(await resp.text(), 'text/html');
+    const links = [...doc.querySelectorAll('a[href]')];
+    if (!links.length) return null;
+    const list = el('ul', { class: 'cug-auth-internal', 'aria-label': 'Internal' });
+    links.forEach((a) => {
+      const external = /^https?:/.test(a.getAttribute('href'));
+      const attrs = { href: a.getAttribute('href') };
+      if (external) Object.assign(attrs, { target: '_blank', rel: 'noopener' });
+      list.append(el('li', {}, el('a', attrs, a.textContent.trim())));
+    });
+    return [el('p', { class: 'cug-auth-label' }, 'Internal'), list];
+  } catch {
+    return null;
+  }
+}
+
 function buildAccountMenu(user) {
   const wrapper = el('div', { class: 'cug-auth-account' });
 
@@ -98,6 +121,9 @@ function buildAccountMenu(user) {
   });
 
   wrapper.append(trigger, panel);
+  buildInternalLinks(user).then((nodes) => {
+    if (nodes) panel.querySelector('.cug-auth-links').before(...nodes);
+  });
   return wrapper;
 }
 
