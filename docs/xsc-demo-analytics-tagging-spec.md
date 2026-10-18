@@ -218,6 +218,22 @@ Captures who's viewing and under what grant, so you can segment internal vs. cus
 - **Privacy:** confirm whether the raw access code may be stored. If codes map to a named
   customer, prefer storing an opaque alias in eVar16 and keeping the lookup off-platform.
 
+### Implementation (as built)
+
+Per-page metadata the code reads (set in the bulk `/metadata` sheet or on the page):
+
+| Metadata | Feeds | Notes |
+|----------|-------|-------|
+| `template` | eVar1 | Bulk sheet sets it per folder (`home`, `demo`, `customer-demo`, `workshop`, …) |
+| `demo-id` | eVar17 | Set per demo page in the bulk sheet; falls back to the path slug |
+| `access-tier` | eVar15 | Optional (`/internal/**` = `employee`). Otherwise from the signed-in session, then a redeemed code (`customer-guest`), else `unknown` |
+| `analytics` = `off` | — | Disables tracking on that page |
+
+- **Access code:** read from `?code=` or the access-code form, kept in sessionStorage, and sent
+  in eVar16 as a SHA-256 alias (`ac-` + first 10 hex chars of the upper-cased code). The raw
+  code is never sent. The alias → customer lookup is kept off-platform.
+- **Tracking Code** (`s.campaign` / `v0`) carries `?cid=` attribution.
+
 ---
 
 ## 7. Reuse on external / Experience League pages

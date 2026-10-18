@@ -38,6 +38,42 @@ const isDebug = () => {
   }
 };
 const isProduction = () => CONFIG.productionHosts.includes(window.location.hostname);
+const isDisabled = () => getMetadata('analytics').toLowerCase() === 'off';
+
+/* ---------- access code (raw code stays in sessionStorage; only a hash is sent) ---------- */
+
+const CODE_KEY = 'xsc-access-code';
+const normalizeCode = (code) => (code || '').trim().toUpperCase();
+
+function rememberCode(code) {
+  const value = normalizeCode(code);
+  if (!value) return;
+  try {
+    sessionStorage.setItem(CODE_KEY, value);
+  } catch {
+    // storage unavailable
+  }
+}
+
+function captureCodeParam() {
+  rememberCode(new URLSearchParams(window.location.search).get('code'));
+}
+
+export async function codeAlias(code) {
+  const value = normalizeCode(code);
+  if (!value || !window.crypto?.subtle) return '';
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  return `ac-${hex.slice(0, 10)}`;
+}
+
+function storedCode() {
+  try {
+    return sessionStorage.getItem(CODE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
 
 /* ---------- component context ---------- */
 
@@ -128,6 +164,8 @@ function watchForms(main) {
     push({ event: 'formSubmit', form: { name: formName(e.target) } });
   });
   main.addEventListener('submit', (e) => {
+    const codeInput = e.target.querySelector('input[name="code"]');
+    if (codeInput) rememberCode(codeInput.value);
     if (e.target.dataset.action) return;
     push({ event: 'formSubmit', form: { name: formName(e.target) } });
   });
@@ -174,6 +212,8 @@ let initialized = false;
 export function initDataLayer() {
   if (initialized) return;
   initialized = true;
+  if (isDisabled()) return;
+  captureCodeParam();
   dataLayer();
   const main = document.querySelector('main');
   if (!main) return;
@@ -186,18 +226,28 @@ export function initDataLayer() {
 
 /* ---------- AppMeasurement (delayed phase) ---------- */
 
-async function accessContext() {
+async function sessionTier() {
   try {
     const resp = await fetch('/auth/me', { credentials: 'same-origin', cache: 'no-store' });
-    if (!resp.ok || !resp.headers.get('content-type')?.includes('json')) return { tier: 'anonymous', code: '' };
+    if (!resp.ok || !resp.headers.get('content-type')?.includes('json')) return '';
     const me = await resp.json();
-    if (!me.authenticated) return { tier: 'anonymous', code: '' };
-    // eVar16 stores the customer the code grants (an alias), never the code itself.
-    if (me.guest) return { tier: 'customer-guest', code: (me.groups || []).join(',') };
-    return { tier: 'employee', code: '' };
+    if (!me.authenticated) return '';
+    return me.guest ? 'customer-guest' : 'employee';
   } catch {
-    return { tier: 'anonymous', code: '' };
+    return '';
   }
+}
+
+/**
+ * eVar15 precedence: access-tier metadata, then the signed-in session (/auth/me),
+ * then a redeemed access code (customer-guest), otherwise unknown.
+ */
+async function accessContext() {
+  const code = storedCode();
+  const tier = getMetadata('access-tier')
+    || await sessionTier()
+    || (code ? 'customer-guest' : 'unknown');
+  return { tier, alias: await codeAlias(code) };
 }
 
 function pageContext(access) {
@@ -208,7 +258,7 @@ function pageContext(access) {
     locale: document.documentElement.lang || 'en',
     demoId: getMetadata('demo-id') || slug,
     accessTier: access.tier,
-    accessCode: access.code,
+    accessCode: access.alias,
   };
 }
 
@@ -272,6 +322,7 @@ function loadScript(src) {
 }
 
 export async function loadAnalytics() {
+  if (isDisabled()) return;
   initDataLayer();
   const debug = isDebug();
   const send = isProduction();

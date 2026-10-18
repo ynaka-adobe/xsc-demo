@@ -45,6 +45,7 @@ function buildForm(params, compact) {
     required: '',
     placeholder: 'e.g. ABCD-123456',
   });
+  if (params.get('code')) input.value = params.get('code');
   if (error) {
     input.setAttribute('aria-invalid', 'true');
     input.setAttribute('aria-describedby', 'demo-access-error');
