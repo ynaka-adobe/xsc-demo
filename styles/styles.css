@@ -262,3 +262,26 @@ main .section.highlight {
   margin: 0;
   padding: 40px 0;
 }
+
+/* global recommendations: closing area shared across demo pages, kept out of the subnav */
+main .section.recommendations {
+  margin-top: 64px;
+  padding-top: 0;
+  border-top: 4px solid var(--text-color);
+}
+
+main .section.recommendations > div:first-child::before {
+  content: 'Recommended next';
+  display: block;
+  margin: 24px 0 8px;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dark-color);
+}
+
+main .section.recommendations h2 {
+  margin-top: 16px;
+  font-size: var(--heading-font-size-m);
+}

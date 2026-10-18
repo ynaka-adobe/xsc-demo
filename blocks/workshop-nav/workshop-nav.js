@@ -30,7 +30,7 @@ function group(title, headings) {
 function decorateBar(block) {
   const main = block.closest('main');
   const section = block.closest('.section');
-  const headings = [...main.querySelectorAll('.default-content-wrapper h2')];
+  const headings = [...main.querySelectorAll('.section:not(.recommendations) .default-content-wrapper h2')];
   const wrapper = block.parentElement;
   if (!headings.length) {
     wrapper.remove();
