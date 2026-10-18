@@ -374,7 +374,7 @@ header nav .cug-auth-panel {
   top: calc(100% + 10px);
   right: 0;
   z-index: 3;
-  width: 280px;
+  width: min(440px, calc(100vw - 32px));
   padding: 16px;
   border-radius: 12px;
   background-color: var(--background-color);
@@ -431,6 +431,7 @@ header nav .cug-auth .cug-auth-groups li {
   background-color: var(--light-color);
   border: 1px solid #e3e3e3;
   font-size: 13px;
+  white-space: nowrap;
 }
 
 header nav .cug-auth .cug-auth-groups li.empty {

@@ -18,6 +18,7 @@
 
 import { subscribe } from './analytics.js';
 import { INVISIBLE_TRAFFIC_SHARE, observeSignals, assessBot } from './signals.js';
+import { onIdentity, observeIdentity } from './identity.js';
 
 const STORAGE_KEY = 'xsc-insights';
 const FEED_LIMIT = 60;
@@ -53,8 +54,9 @@ const state = {
   scroll: 0,
   categories: new Map(),
   page: null,
+  identity: null,
   // `<details>` open state must survive the panel's full re-render on each event
-  open: { signals: false },
+  open: { identity: true, signals: false },
 };
 
 let refs = null;
@@ -245,6 +247,72 @@ function provenance(kind) {
   return chip;
 }
 
+/* ─────────────────────────── real-time identity ────────────────────────── */
+
+/**
+ * The first-party profile built from a submitted form. Deliberately shows the
+ * real submitted values — the point is to watch an identity form in real time —
+ * while making its handling explicit, because this is the one card on the panel
+ * that holds personal data.
+ */
+function renderIdentity() {
+  const section = el('details', 'insights-section insights-signals insights-identity');
+  section.open = state.open.identity;
+  section.addEventListener('toggle', () => { state.open.identity = section.open; });
+
+  const summary = el('summary', 'insights-heading insights-signals-summary');
+  summary.append(el('span', null, 'Identity'));
+  summary.append(el(
+    'span',
+    `insights-badge ${state.identity ? 'insights-badge-live' : ''}`.trim(),
+    state.identity ? 'Captured' : 'Awaiting',
+  ));
+  section.append(summary);
+
+  if (!state.identity) {
+    section.append(el(
+      'p',
+      'insights-disclaimer',
+      'A first-party profile appears here the moment a visitor submits a form '
+      + 'on this page — the form block or a Marketo form.',
+    ));
+    section.append(renderEmpty('No identity captured yet — submit a form to see this update live.'));
+    return section;
+  }
+
+  const { fields, source, at } = state.identity;
+  const head = el('div', 'insights-roadmap-stat');
+  head.append(el('span', 'insights-stat-value', String(fields.length)));
+  head.append(el('span', 'insights-stat-label', `attributes captured from ${source}`));
+  head.append(el('span', 'insights-note', `Submitted at ${at.toLocaleTimeString()}`));
+  head.append(provenance('measured'));
+  section.append(head);
+
+  const dl = el('dl', 'insights-observations insights-identity-fields');
+  fields.forEach((f) => {
+    const row = el('div');
+    const dt = el('dt', null, f.label);
+    if (f.sensitive) dt.append(el('span', 'insights-pii', 'PII'));
+    row.append(dt);
+    const dd = el('dd');
+    dd.append(el('strong', null, f.value));
+    row.append(dd);
+    dl.append(row);
+  });
+  section.append(dl);
+
+  section.append(el(
+    'p',
+    'insights-disclaimer',
+    'Held in memory for this page only — never written to storage, and never '
+    + 'pushed to the data layer, because everything on the data layer is '
+    + 'forwarded to Adobe. The event that reaches Analytics is formSubmit '
+    + '(event5) with the form name only, carrying no field values.',
+  ));
+
+  return section;
+}
+
 function renderSignals() {
   const section = el('details', 'insights-section insights-signals');
   section.open = state.open.signals;
@@ -267,7 +335,9 @@ function renderSignals() {
   // ── bot assessment (genuinely computed here)
   const bot = assessBot();
   const head = el('div', 'insights-signal-head');
-  const gauge = el('div', `insights-gauge insights-gauge-${bot.verdict === 'Human' ? 'ok' : 'warn'}`);
+  // Keyed off the score, not the label, so rewording a verdict cannot silently
+  // change the colour.
+  const gauge = el('div', `insights-gauge insights-gauge-${bot.score < 30 ? 'ok' : 'warn'}`);
   gauge.append(el('span', 'insights-gauge-value', String(bot.score)));
   gauge.append(el('span', 'insights-gauge-scale', '/ 100'));
   head.append(gauge);
@@ -357,6 +427,9 @@ function render() {
   stats.append(renderStat('Scroll', state.scroll ? `${state.scroll}%` : '—'));
   body.append(stats);
   body.append(renderContext());
+
+  // ── identity (above Observations: the profile frames everything below it)
+  body.append(renderIdentity());
 
   // ── insights
   const insightSection = el('section', 'insights-section');
@@ -502,9 +575,16 @@ async function mount() {
       // start passive signal observation as early as the panel exists, so the bot
       // assessment has real interaction history by the time it is first opened
       observeSignals();
+      // identity capture is independent of the data layer — personal data must
+      // not travel on the channel that forwards to Adobe (see identity.js)
+      observeIdentity();
       build();
       subscribe((entry) => {
         record(entry);
+        scheduleRender();
+      });
+      onIdentity((profile) => {
+        state.identity = profile;
         scheduleRender();
       });
     })();

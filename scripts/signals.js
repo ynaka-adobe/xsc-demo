@@ -177,9 +177,15 @@ export function assessBot() {
   else if (fired.length === 2) confidence = 'Medium';
   else if (fired.length === 0 && ctx.elapsed > 5000) confidence = 'Medium';
 
-  let verdict = 'Human';
-  if (score >= 60) verdict = 'Likely automated';
-  else if (score >= 30) verdict = 'Suspicious';
+  // Labels describe the evidence, not the visitor. A low score means little or
+  // nothing fired, which is not the same as proving a human is present — a bot
+  // that spoofs these properties lands there too, and saying "Human" would
+  // claim a certainty the browser cannot give us. The zero case is called out
+  // separately so the label never reads "No signals" while listing one.
+  let verdict = 'Weak automation signals';
+  if (score >= 60) verdict = 'Strong automation signals';
+  else if (score >= 30) verdict = 'Some automation signals';
+  else if (score === 0) verdict = 'No automation signals';
 
   return {
     score,
