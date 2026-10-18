@@ -32,21 +32,28 @@
   color: var(--pd-accent);
 }
 
+.persona-demo-control:first-child {
+  display: grid;
+}
+
 .persona-demo-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 6px;
 }
 
 .persona-demo-chip {
   margin: 0;
-  padding: 8px 16px;
+  padding: 6px 10px;
   border: 1px solid #666;
-  border-radius: 999px;
+  border-radius: 18px;
   background: transparent;
   color: #fff;
   font: inherit;
-  font-size: var(--body-font-size-xs);
+  font-size: 14px;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
   cursor: pointer;
 }
 
