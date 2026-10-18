@@ -61,6 +61,7 @@ async function handleSubmit(form) {
       },
     });
     if (response.ok) {
+      form.dispatchEvent(new CustomEvent('xsc:form-success', { bubbles: true }));
       if (form.dataset.confirmation) {
         window.location.href = form.dataset.confirmation;
       }
