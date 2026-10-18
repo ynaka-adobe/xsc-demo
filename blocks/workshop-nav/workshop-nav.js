@@ -27,12 +27,84 @@ function group(title, headings) {
   return wrap;
 }
 
+function decorateBar(block) {
+  const main = block.closest('main');
+  const section = block.closest('.section');
+  const headings = [...main.querySelectorAll('.default-content-wrapper h2')];
+  const wrapper = block.parentElement;
+  if (!headings.length) {
+    wrapper.remove();
+    return;
+  }
+
+  const nav = document.createElement('nav');
+  nav.className = 'workshop-nav-bar';
+  nav.setAttribute('aria-label', 'On this page');
+  const list = document.createElement('ul');
+  headings.forEach((h) => {
+    if (!h.id) h.id = toClassName(h.textContent);
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = `#${h.id}`;
+    a.textContent = h.textContent.trim().replace(/^\d+\.\s*/, '');
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.history.replaceState(null, '', `#${h.id}`);
+    });
+    li.append(a);
+    list.append(li);
+  });
+  nav.append(list);
+
+  // the bar lives directly in <main> so it stays sticky across every section
+  const sentinel = document.createElement('div');
+  sentinel.className = 'workshop-nav-sentinel';
+  main.insertBefore(sentinel, section);
+  main.insertBefore(nav, section);
+  wrapper.remove();
+  if (!section.querySelector(':scope > div')) section.remove();
+  document.body.classList.add('has-subnav');
+
+  // once the bar reaches the header, hide the header and pin the bar to the top
+  new IntersectionObserver(([entry]) => {
+    const pinned = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+    document.body.classList.toggle('subnav-pinned', pinned);
+  }, { rootMargin: '-64px 0px 0px 0px' }).observe(sentinel);
+
+  const links = [...list.querySelectorAll('a')];
+  let current = headings[0];
+  const spy = () => {
+    const passed = headings.filter((h) => h.getBoundingClientRect().top < 140);
+    const active = passed[passed.length - 1] || headings[0];
+    if (active === current) return;
+    current = active;
+    links.forEach((a) => {
+      const on = a.getAttribute('href') === `#${active.id}`;
+      a.classList.toggle('active', on);
+      if (on) list.scrollTo({ left: a.offsetLeft - 24, behavior: 'smooth' });
+    });
+  };
+  window.addEventListener('scroll', spy, { passive: true });
+  links[0].classList.add('active');
+}
+
 /**
  * Sticky sidebar for workshop pages, built from the section's h2/h3 headings.
  * Headings starting with "Lesson", "Lab" or "Module" are listed under Lessons.
  * Optional block rows add extra links (e.g. lesson pages) under Lessons.
  */
 export default function decorate(block) {
+  const isWorkshop = window.location.pathname.startsWith('/workshops/');
+  const hasLessons = [...document.querySelectorAll('main :is(h2, h3)')]
+    .some((h) => LESSON_RE.test(h.textContent.trim()));
+  const sidebar = block.classList.contains('sidebar')
+    || (!block.classList.contains('bar') && (isWorkshop || hasLessons || block.querySelector('a')));
+  if (!sidebar) {
+    decorateBar(block);
+    return;
+  }
+
   const section = block.closest('.section');
   const extra = [...block.querySelectorAll('a')];
   block.textContent = '';

@@ -88,3 +88,72 @@ main > .section.workshop-layout .workshop-content > div {
     margin-bottom: 32px;
   }
 }
+
+/* top bar mode (demo pages): sticky "on this page" bar; the header slides away once it pins */
+main > .workshop-nav-bar {
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 1;
+  border-bottom: 1px solid #e1e1e1;
+  background: rgb(255 255 255 / 96%);
+  backdrop-filter: blur(6px);
+  transition: top 0.25s ease;
+}
+
+.workshop-nav-bar ul {
+  display: flex;
+  gap: 4px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 24px;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.workshop-nav-bar li {
+  flex: none;
+}
+
+.workshop-nav-bar a:any-link {
+  display: block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: #444;
+  font-size: var(--body-font-size-xs);
+  white-space: nowrap;
+}
+
+.workshop-nav-bar a:hover {
+  background: #f0f0f0;
+  color: #111;
+  text-decoration: none;
+}
+
+.workshop-nav-bar a.active {
+  background: #111;
+  color: #fff;
+}
+
+header .nav-wrapper {
+  transition: transform 0.25s ease;
+}
+
+body.subnav-pinned header .nav-wrapper {
+  transform: translateY(-100%);
+}
+
+body.subnav-pinned main > .workshop-nav-bar {
+  top: 0;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+}
+
+.has-subnav .section h2 {
+  scroll-margin-top: 72px;
+}
+
+@media (width >= 900px) {
+  .workshop-nav-bar ul {
+    padding: 8px 32px;
+  }
+}
