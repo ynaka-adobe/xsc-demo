@@ -1,0 +1,228 @@
+.persona-demo {
+  --pd-accent: #e8481c;
+  --pd-ink: #1b1b1b;
+
+  display: grid;
+  gap: 24px;
+  margin: 24px 0;
+}
+
+.persona-demo-controls {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--pd-ink);
+  color: #fff;
+}
+
+.persona-demo-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.persona-demo-label {
+  min-width: 120px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--pd-accent);
+}
+
+.persona-demo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.persona-demo-chip {
+  margin: 0;
+  padding: 8px 16px;
+  border: 1px solid #666;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: var(--body-font-size-xs);
+  cursor: pointer;
+}
+
+.persona-demo-chip[aria-pressed='true'] {
+  border-color: var(--pd-accent);
+  background: var(--pd-accent);
+}
+
+.persona-demo-region {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font: inherit;
+  font-size: var(--body-font-size-xs);
+}
+
+.persona-demo-desc {
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+  color: #ccc;
+}
+
+.persona-demo-stage {
+  display: grid;
+  gap: 20px;
+}
+
+.persona-demo-layer {
+  position: relative;
+  padding: 28px 20px 20px;
+  border: 1px dashed #bbb;
+  border-radius: 12px;
+}
+
+.persona-demo-layer-tag {
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--pd-accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.persona-demo-banner {
+  padding: 32px;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #1b1b1b 0%, #3a3a3a 100%);
+  color: #fff;
+  transition: background 0.3s;
+}
+
+.persona-demo[data-persona='technical'] .persona-demo-banner { background: linear-gradient(120deg, #0d2a4d, #1f5c99); }
+.persona-demo[data-persona='business'] .persona-demo-banner { background: linear-gradient(120deg, #3b1d0e, #a8401a); }
+.persona-demo[data-persona='procurement'] .persona-demo-banner { background: linear-gradient(120deg, #0f3b2a, #1d7a52); }
+.persona-demo[data-persona='researcher'] .persona-demo-banner { background: linear-gradient(120deg, #2e1a47, #6b3fa0); }
+
+.persona-demo-banner h3 {
+  margin: 4px 0 8px;
+  color: #fff;
+}
+
+.persona-demo-banner p {
+  margin: 0 0 12px;
+}
+
+.persona-demo-eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.persona-demo-section-head {
+  margin: 0 0 12px;
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+}
+
+.persona-demo-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.persona-demo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--light-color);
+  border-top: 4px solid var(--pd-accent);
+}
+
+.persona-demo-card p {
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+}
+
+.persona-demo-kind {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dark-color);
+}
+
+.persona-demo-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.persona-demo-tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #e4e4e4;
+  font-size: 12px;
+}
+
+.persona-demo-search {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font: inherit;
+  font-size: var(--body-font-size-xs);
+}
+
+.persona-demo-results {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 24px;
+}
+
+.persona-demo-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--body-font-size-xs);
+}
+
+.persona-demo-result.is-muted {
+  opacity: 0.45;
+}
+
+.persona-demo-result:not(.is-muted) + .persona-demo-result.is-muted {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #ddd;
+}
+
+.persona-demo-fragment {
+  padding: 16px;
+  border-radius: 8px;
+  background: #e6f6ee;
+}
+
+.persona-demo-fragment-src {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--dark-color);
+}
+
+.persona-demo-fragment-body p {
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+}
