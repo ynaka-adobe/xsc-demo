@@ -55,6 +55,28 @@ async function buildInternalLinks(user) {
   }
 }
 
+// Presenter-only live analytics panel (scripts/insights.js), employees only.
+function buildInsightsItem(closeMenu) {
+  const link = el('a', {
+    href: '#', role: 'button', class: 'cug-auth-insights', 'aria-pressed': 'false',
+  }, 'Show live analytics');
+  const sync = (open) => {
+    link.setAttribute('aria-pressed', String(open));
+    link.textContent = open ? 'Hide live analytics' : 'Show live analytics';
+  };
+  document.addEventListener('xsc:insights', (e) => sync(e.detail.open));
+  link.addEventListener('click', async (e) => {
+    e.preventDefault();
+    closeMenu();
+    const { toggleInsights } = await import('../../scripts/insights.js');
+    toggleInsights();
+  });
+  import('../../scripts/insights.js').then(({ wasOpen, toggleInsights }) => {
+    if (wasOpen()) toggleInsights(true);
+  });
+  return el('li', {}, link);
+}
+
 function buildAccountMenu(user) {
   const wrapper = el('div', { class: 'cug-auth-account' });
 
@@ -118,6 +140,10 @@ function buildAccountMenu(user) {
       trigger.focus();
     }
   });
+
+  if (!user.guest) {
+    panel.querySelector('.cug-auth-links').prepend(buildInsightsItem(() => setOpen(false)));
+  }
 
   wrapper.append(trigger, panel);
   buildInternalLinks(user).then((nodes) => {

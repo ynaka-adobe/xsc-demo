@@ -21,11 +21,30 @@ const CONFIG = {
 };
 
 const DL = 'xscDataLayer';
+const listeners = [];
 const dataLayer = () => {
-  window[DL] = window[DL] || [];
-  return window[DL];
+  if (!window[DL]) window[DL] = [];
+  const dl = window[DL];
+  if (!dl.xscWrapped) {
+    dl.xscWrapped = true;
+    dl.push = (...entries) => {
+      const n = Array.prototype.push.apply(dl, entries);
+      entries.forEach((entry) => listeners.forEach((fn) => fn(entry)));
+      return n;
+    };
+  }
+  return dl;
 };
-const push = (entry) => dataLayer().push(entry);
+const push = (entry) => dataLayer().push({ time: Date.now(), ...entry });
+
+/**
+ * Replays everything already on the data layer, then calls `fn` for each new entry.
+ * Used by the AppMeasurement transport and the live insights panel.
+ */
+export function subscribe(fn) {
+  dataLayer().forEach(fn);
+  listeners.push(fn);
+}
 
 const isDebug = () => {
   try {
@@ -330,7 +349,9 @@ export async function loadAnalytics() {
   const log = (...args) => debug && console.log('[analytics]', ...args);
 
   const page = pageContext(await accessContext());
-  dataLayer().unshift({ event: 'page', page });
+  const pageEntry = { event: 'page', time: Date.now(), page };
+  dataLayer().unshift(pageEntry);
+  listeners.forEach((fn) => fn(pageEntry));
 
   let s = null;
   if (send) {
@@ -384,10 +405,5 @@ export async function loadAnalytics() {
     HIT_VARS.forEach((k) => { s[k] = undefined; });
   };
 
-  const dl = dataLayer();
-  dl.forEach(handle);
-  dl.push = (...entries) => {
-    entries.forEach(handle);
-    return Array.prototype.push.apply(dl, entries);
-  };
+  subscribe(handle);
 }
