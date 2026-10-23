@@ -65,3 +65,59 @@
 .table.bordered table td {
   border: 1px solid #dadada;
 }
+
+/* excel variant: spreadsheet look (gridlines, light-blue header, compact type) */
+.table.excel table {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.table.excel table thead tr {
+  border: 0;
+}
+
+.table.excel table th,
+.table.excel table td {
+  border: 1px solid #c9d3df;
+  padding: 6px 10px;
+  vertical-align: top;
+}
+
+.table.excel table th {
+  background-color: #dbe7f5;
+  color: var(--dark-color);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.table.excel table td:first-child {
+  width: 3.5em;
+  text-align: right;
+  color: var(--text-color);
+}
+
+.table.excel table tbody tr:nth-child(even) {
+  background-color: #f7f9fc;
+}
+
+/* general questions: # | Question | Notes | Asked by | Priority | Status */
+.table.excel.questions table td:nth-child(2) {
+  width: 36%;
+}
+
+.table.excel.questions table td:nth-child(3) {
+  width: 34%;
+}
+
+.table.excel.questions table td:nth-child(n + 4) {
+  white-space: nowrap;
+}
+
+.table.excel .excel-high {
+  font-weight: 700;
+  color: #a32d2d;
+}
+
+.table.excel .excel-open {
+  font-weight: 600;
+}
