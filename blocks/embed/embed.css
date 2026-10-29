@@ -60,3 +60,18 @@
   top: 4px;
   left: 7px;
 }
+
+/* wide variant ("Embed (Wide)"): the full width of the content column, and tall enough for an app */
+.embed.wide {
+  max-width: none;
+  width: 100%;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.embed.wide > div {
+  display: block;
+  height: min(80vh, 760px) !important;
+  min-height: 520px;
+  padding-bottom: 0 !important;
+}
