@@ -71,7 +71,7 @@
 
 .embed.wide > div {
   display: block;
-  height: min(80vh, 760px) !important;
-  min-height: 520px;
+  height: min(68vh, 620px) !important;
+  min-height: 460px;
   padding-bottom: 0 !important;
 }
