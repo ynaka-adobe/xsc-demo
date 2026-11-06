@@ -17,6 +17,18 @@ const AUTH_ORIGIN = 'https://xsc-demo.ynaka-adobe.com';
 /* API                                                                        */
 /* -------------------------------------------------------------------------- */
 
+/** Current site session from the Edge Function; null where /auth is unavailable. */
+async function fetchMe() {
+  if (window.location.origin !== AUTH_ORIGIN) return null;
+  try {
+    const resp = await fetch('/auth/me', { credentials: 'same-origin', cache: 'no-store' });
+    if (!resp.ok || !resp.headers.get('content-type')?.includes('json')) return null;
+    return await resp.json();
+  } catch {
+    return null;
+  }
+}
+
 async function call(endpoint, action, body) {
   const resp = await fetch(`${endpoint}/${action}`, {
     method: 'POST',
@@ -38,7 +50,7 @@ function el(tag, attrs = {}, ...children) {
     else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
     else node.setAttribute(k, v);
   });
-  children.flat().filter((c) => c !== null && c !== undefined && c !== '').forEach((c) => {
+  children.flat(Infinity).filter((c) => c !== null && c !== undefined && c !== '').forEach((c) => {
     node.append(c instanceof Node ? c : document.createTextNode(c));
   });
   return node;
@@ -107,7 +119,7 @@ function notify(message) {
 /* Steps                                                                      */
 /* -------------------------------------------------------------------------- */
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const config = Object.fromEntries([...block.children].map((row) => [
     row.children[0]?.textContent.trim().toLowerCase(),
     row.children[1]?.textContent.trim(),
@@ -236,6 +248,39 @@ export default function decorate(block) {
     setStatus('');
   };
 
+  function renderSignedIn(me) {
+    const rows = [
+      ['Name', me.name],
+      ['Access', me.guest ? 'Guest (access code / OTP)' : 'Signed in with Okta'],
+      ['Groups', (me.groups || []).join(', ')],
+      ['Company', me.company],
+      ['Country', me.country],
+      ['Attributes', (me.attributes || []).join(', ')],
+    ].filter(([, v]) => v);
+    const demos = me.demos || [];
+    show(
+      el('h3', {}, 'You’re already signed in'),
+      el('dl', { class: 'otp-claims' }, rows.map(([k, v]) => [el('dt', {}, k), el('dd', {}, v)])),
+      demos.length ? el('p', {}, 'Your demos: ', demos.map((d, i) => [
+        i ? ', ' : '',
+        el('a', { href: d.path }, d.customer),
+      ])) : null,
+      el('div', { class: 'otp-actions' }, el('button', {
+        type: 'button',
+        class: 'button',
+        onclick: async (e) => {
+          e.target.disabled = true;
+          setStatus('Signing out…');
+          await fetch('/auth/logout', { credentials: 'same-origin', cache: 'no-store' }).catch(() => {});
+          window.location.reload();
+        },
+      }, 'Log out')),
+    );
+    setStatus('Log out to try the one-time password flow.');
+  }
+
   block.replaceChildren(panel);
-  renderRequest();
+  const me = await fetchMe();
+  if (me?.authenticated) renderSignedIn(me);
+  else renderRequest();
 }
