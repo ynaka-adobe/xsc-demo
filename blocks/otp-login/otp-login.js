@@ -5,10 +5,13 @@
  * notification and in the App Builder activation log.
  *
  * Authoring (optional): a row "Endpoint | <App Builder package URL>" overrides
- * the default endpoint.
+ * the default endpoint; a row "Guest code | <code>" sets the guest access
+ * code redeemed after a successful verify (default DEMO-GUEST).
  */
 
 const DEFAULT_ENDPOINT = 'https://332794-xscotpdemo-stage.adobeioruntime.net/api/v1/web/otp';
+const DEFAULT_GUEST_CODE = 'DEMO-GUEST';
+const AUTH_ORIGIN = 'https://xsc-demo.ynaka-adobe.com';
 
 /* -------------------------------------------------------------------------- */
 /* API                                                                        */
@@ -39,6 +42,21 @@ function el(tag, attrs = {}, ...children) {
     node.append(c instanceof Node ? c : document.createTextNode(c));
   });
   return node;
+}
+
+/**
+ * OTP here is demo-grade (the code is shown on screen), so a verified visitor
+ * gets the same access as the public sample guest code, nothing more.
+ */
+function signInAsGuest(code) {
+  const base = window.location.origin === AUTH_ORIGIN ? '' : AUTH_ORIGIN;
+  const form = el(
+    'form',
+    { method: 'post', action: `${base}/auth/code`, hidden: '' },
+    el('input', { type: 'hidden', name: 'code', value: code }),
+  );
+  document.body.append(form);
+  form.submit();
 }
 
 function formatTime(iso) {
@@ -95,6 +113,7 @@ export default function decorate(block) {
     row.children[1]?.textContent.trim(),
   ]));
   const endpoint = (config.endpoint || DEFAULT_ENDPOINT).replace(/\/$/, '');
+  const guestCode = config['guest code'] || DEFAULT_GUEST_CODE;
   const state = { channel: 'sms', to: '' };
 
   const status = el('p', { class: 'otp-status', 'aria-live': 'polite' });
@@ -127,7 +146,8 @@ export default function decorate(block) {
       ),
       el('button', { type: 'button', class: 'button secondary', onclick: () => renderRequest() }, 'Start over'),
     );
-    setStatus('');
+    setStatus('Signing you in as a guest…');
+    setTimeout(() => signInAsGuest(guestCode), 1500);
   }
 
   function renderVerify(sent) {
