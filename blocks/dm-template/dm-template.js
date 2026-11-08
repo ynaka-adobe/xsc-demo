@@ -30,7 +30,7 @@ const DEFAULTS = {
   alt: '',
   fallback: 'trp-offer',
   image: 'product',
-  order: ['line1', 'discount1', 'expiry'],
+  order: ['line1', 'discount1'],
 };
 // cards-offers pipe format: line1 | line2 | discount1 | discount2 | expiry
 const PIPE_ORDER = ['line1', 'line2', 'discount1', 'discount2', 'expiry'];
