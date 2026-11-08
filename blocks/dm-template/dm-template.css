@@ -58,7 +58,7 @@
   }
 }
 
-/* playground: editable DA table beside the live output */
+/* playground: editable DA table above the live output */
 .dm-template.playground {
   display: grid;
   grid-template-columns: 1fr;
@@ -123,24 +123,4 @@
 .dm-template-edit:focus {
   outline: 2px solid #3b63fb;
   background: #fff;
-}
-
-.dm-template.playground .dm-template-output {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.dm-template.playground .dm-template-url {
-  font-size: 12px;
-}
-
-@media (width >= 900px) {
-  .dm-template.playground {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-
-  .dm-template.playground .dm-template-step:last-child {
-    position: sticky;
-    top: calc(var(--nav-height, 64px) + 16px);
-  }
 }
