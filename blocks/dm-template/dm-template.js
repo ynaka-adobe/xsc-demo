@@ -1,34 +1,61 @@
 /*
  * dm-template: renders images from a Dynamic Media (Scene7) template.
  *
- * Authoring (one block table):
- *   | Template | CEM/xsc-offer-tile |          required, company/template
- *   | Server   | https://s7d9.scene7.com |     optional
- *   | Size     | 500x667 |                     optional, output wid x hei
- *   | Format   | png |                         optional, fmt=
- *   | Fallback | trp-offer |                   optional layered recipe used until
- *                                               the template is published (recipes.js)
- *   | $expiry  | 12.31.2026 |                  shared parameter (all tiles)
- *   | $line1 | $line2 | $discount1 | ... |     header row: parameter names
- *   | TRP Brake | Brake Chambers | 6 | ... |   one row per tile
+ * Compact authoring (recommended), one row per tile:
+ *   | dm-template |                                          |
+ *   | CEM/trp-brake-product | line1: TRP Brake Chambers         |
+ *   |                       | line2: Installation of ...        |
+ *   |                       | discount1: 6  discount2: 25 ...   |
+ * The first cell is the product image ($product); the second holds one
+ * "name: value" per line. A single pipe-delimited line is also accepted
+ * (cards-offers style) and mapped to DEFAULTS.order.
  *
- * Without a header row the shared parameters render a single image.
+ * Optional setting rows override DEFAULTS:
+ *   | Template | CEM/xsc-offer-tile |   | Server | https://s7d9.scene7.com |
+ *   | Size | 500x667 |   | Format | png |   | Alt | ... |   | Fallback | trp-offer |
+ *   | $expiry | 12.31.2026 |            shared parameter (all tiles)
+ *
+ * Column authoring is still supported: a row of $names, then one row per tile.
  * Each tile builds: {server}/is/image/{template}?$name=value&...&wid=&hei=&fmt=
  */
 
 import recipeURL from './recipes.js';
 
 const CONFIG_KEYS = ['template', 'server', 'size', 'format', 'alt', 'fallback'];
-const DEFAULT_SERVER = 'https://s7d9.scene7.com';
+const DEFAULTS = {
+  template: 'CEM/xsc-offer-tile',
+  server: 'https://s7d9.scene7.com',
+  size: '500x667',
+  format: 'png',
+  alt: '',
+  fallback: 'trp-offer',
+  image: 'product',
+  order: ['line1', 'line2', 'discount1', 'discount2', 'expiry'],
+};
+const PAIR = /^\$?([\w-]+)\s*:\s*(.*)$/;
 
 const cellText = (cell) => (cell?.textContent ?? '').trim();
 const isParam = (text) => text.startsWith('$') && text.length > 1;
 const dimensions = (size) => (size || '').split(/[x,×]/i).map((n) => parseInt(n, 10));
 
+function cellLines(cell) {
+  const copy = cell.cloneNode(true);
+  copy.querySelectorAll('br').forEach((br) => br.replaceWith('\n'));
+  copy.querySelectorAll('p, li').forEach((p) => p.append('\n'));
+  return copy.textContent.split('\n').map((line) => line.trim()).filter(Boolean);
+}
+
+function cellValues(cell) {
+  const lines = cellLines(cell);
+  if (lines.length && lines.every((line) => PAIR.test(line))) {
+    return Object.fromEntries(lines.map((line) => line.match(PAIR).slice(1, 3)));
+  }
+  const parts = lines.join(' | ').split('|').map((part) => part.trim());
+  return Object.fromEntries(DEFAULTS.order.map((name, i) => [name, parts[i] || '']));
+}
+
 function parse(block) {
-  const config = {
-    template: '', server: DEFAULT_SERVER, size: '', format: 'png', alt: '', fallback: '',
-  };
+  const config = { ...DEFAULTS };
   const authored = [];
   const shared = {};
   let header = null;
@@ -38,8 +65,8 @@ function parse(block) {
     const cells = [...row.children];
     const texts = cells.map(cellText);
     const key = texts[0].toLowerCase();
+    const link = row.querySelector('a[href]');
     if (header) {
-      const link = row.querySelector('a[href]');
       const values = {};
       header.forEach((name, i) => {
         const text = cells[i] ? cellText(cells[i]) : '';
@@ -54,15 +81,24 @@ function parse(block) {
       [, shared[texts[0].slice(1)]] = texts;
     } else if (texts.length > 1 && texts.every(isParam)) {
       header = texts.map((t) => t.slice(1));
+    } else if (cells.length === 2 && texts[0] && texts[1]) {
+      const values = { [DEFAULTS.image]: texts[0], ...cellValues(cells[1]) };
+      tiles.push({ values, href: link?.href });
     } else {
       // eslint-disable-next-line no-console
       console.warn(`dm-template: ignoring row ${index + 1} (${texts.join(' | ')})`);
     }
   });
 
+  const compact = !header;
+  if (compact) {
+    const names = new Set([DEFAULTS.image, ...DEFAULTS.order]);
+    tiles.forEach(({ values }) => Object.keys(values).forEach((name) => names.add(name)));
+    header = [...names].filter((name) => !(name in shared));
+  }
   if (!tiles.length) tiles.push({ values: {} });
   return {
-    config, authored, shared, header: header || [], tiles,
+    config, authored, shared, header, tiles, compact,
   };
 }
 
@@ -147,62 +183,80 @@ function section(title, ...content) {
   return wrap;
 }
 
-function daTable(config, authored, shared, header) {
-  const cols = Math.max(2, header.length);
+function editable(value, onInput) {
+  const span = document.createElement('span');
+  span.className = 'dm-template-edit';
+  span.contentEditable = 'true';
+  span.spellcheck = false;
+  span.textContent = value;
+  span.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      span.blur();
+    }
+  });
+  span.addEventListener('input', () => onInput(span.textContent.trim()));
+  return span;
+}
+
+function daTable({
+  config, authored, shared, header, tiles, compact,
+}, onEdit) {
+  const cols = compact ? 2 : Math.max(2, header.length);
   const table = document.createElement('table');
   table.className = 'dm-template-da';
   const body = document.createElement('tbody');
-  const row = (texts, isHead = false) => {
-    const tr = document.createElement('tr');
-    const cells = texts.map((text, i) => {
-      const td = document.createElement(isHead ? 'th' : 'td');
-      td.textContent = text;
-      if (i === texts.length - 1 && texts.length < cols) td.colSpan = cols - texts.length + 1;
-      return td;
-    });
-    tr.append(...cells);
-    body.append(tr);
-    return cells;
+  const tr = (...cells) => {
+    const row = document.createElement('tr');
+    row.append(...cells);
+    body.append(row);
   };
-  row(['dm-template (playground)'], true);
-  CONFIG_KEYS.filter((key) => authored.includes(key)).forEach((key) => {
-    row([key.charAt(0).toUpperCase() + key.slice(1), config[key]]);
+  const td = (content, span = 1) => {
+    const cell = document.createElement('td');
+    if (span > 1) cell.colSpan = span;
+    cell.append(content);
+    return cell;
+  };
+  const key = (text) => {
+    const label = document.createElement('span');
+    label.className = 'dm-template-key';
+    label.textContent = text;
+    return label;
+  };
+
+  const th = document.createElement('th');
+  th.colSpan = cols;
+  th.textContent = 'dm-template';
+  tr(th);
+  CONFIG_KEYS.filter((name) => authored.includes(name)).forEach((name) => {
+    tr(td(name.charAt(0).toUpperCase() + name.slice(1)), td(config[name], cols - 1));
   });
-  const sharedCells = {};
-  Object.entries(shared).forEach(([name, value]) => {
-    [, sharedCells[name]] = row([`$${name}`, value]);
+  Object.keys(shared).forEach((name) => {
+    tr(td(`$${name}`), td(editable(shared[name], (v) => onEdit(null, name, v)), cols - 1));
   });
-  if (header.length) row(header.map((name) => `$${name}`));
+  if (!compact) {
+    tr(...header.map((name) => td(`$${name}`)));
+    tiles.forEach(({ values }, i) => tr(...header.map((name) => td(
+      editable(values[name] || '', (v) => onEdit(i, name, v)),
+    ))));
+  } else {
+    tiles.forEach(({ values }, i) => {
+      const text = document.createElement('td');
+      header.filter((name) => name !== DEFAULTS.image).forEach((name) => {
+        const line = document.createElement('div');
+        line.append(key(`${name}: `), editable(values[name] || '', (v) => onEdit(i, name, v)));
+        text.append(line);
+      });
+      const { image } = DEFAULTS;
+      tr(td(editable(values[image] || '', (v) => onEdit(i, image, v))), text);
+    });
+  }
   table.append(body);
-  return { table, sharedCells, addTile: (values) => row(header.map((name) => values[name] || '')) };
+  return table;
 }
 
-function field(name, value, onInput) {
-  const label = document.createElement('label');
-  const span = document.createElement('span');
-  span.textContent = `$${name}`;
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.value = value;
-  input.name = name;
-  input.addEventListener('input', () => onInput(input.value));
-  label.append(span, input);
-  return label;
-}
-
-function fieldset(title, ...fields) {
-  const set = document.createElement('fieldset');
-  const legend = document.createElement('legend');
-  legend.textContent = title;
-  set.append(legend, ...fields);
-  return set;
-}
-
-function playground(block, {
-  config, authored, shared, header, tiles,
-}, list, items, state) {
-  const { table, sharedCells, addTile } = daTable(config, authored, shared, header);
-  const tileCells = tiles.map(({ values }) => addTile(values));
+function playground(block, parsed, list, items, state) {
+  const { config, shared, tiles } = parsed;
   const timers = [];
   const refresh = (indexes) => indexes.forEach((i) => {
     clearTimeout(timers[i]);
@@ -210,43 +264,28 @@ function playground(block, {
       renderTile(items[i], config, { ...shared, ...tiles[i].values }, tiles[i].href, i, state);
     }, 400);
   });
-  const all = tiles.map((_, i) => i);
-
-  const form = document.createElement('form');
-  form.className = 'dm-template-form';
-  form.addEventListener('submit', (event) => event.preventDefault());
-  if (Object.keys(shared).length) {
-    const sharedSet = fieldset('All tiles', ...Object.keys(shared).map((name) => field(name, shared[name], (value) => {
+  const table = daTable(parsed, (i, name, value) => {
+    if (i === null) {
       shared[name] = value;
-      sharedCells[name].textContent = value;
-      refresh(all);
-    })));
-    sharedSet.className = 'dm-template-shared';
-    form.append(sharedSet);
-  }
-  tiles.forEach((tile, i) => {
-    form.append(fieldset(`Tile ${i + 1}`, ...header.map((name, col) => field(name, tile.values[name] || '', (value) => {
-      tile.values[name] = value;
-      tileCells[i][col].textContent = value;
+      refresh(tiles.map((_, n) => n));
+    } else {
+      tiles[i].values[name] = value;
       refresh([i]);
-    }))));
+    }
   });
+  const hint = document.createElement('p');
+  hint.className = 'dm-template-hint';
+  hint.textContent = 'Click any value in the table to edit it, the way an author would in DA.';
 
   block.replaceChildren(
-    section('1. Edit the offer', form),
-    section('2. DA block table (updates as you type)', table),
-    section('3. Dynamic Media output', list),
+    section('Author view: DA block table', hint, table),
+    section('End-user view: live output', list),
   );
 }
 
 export default function decorate(block) {
   const parsed = parse(block);
   const { config, shared, tiles } = parsed;
-  if (!config.template) {
-    // eslint-disable-next-line no-console
-    console.error('dm-template: a "Template" row (company/template) is required.');
-    return;
-  }
   const state = { templateMissing: false };
   const list = document.createElement('ul');
   list.className = 'dm-template-output';
