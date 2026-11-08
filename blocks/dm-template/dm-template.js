@@ -6,6 +6,8 @@
  *   | Server   | https://s7d9.scene7.com |     optional
  *   | Size     | 500x667 |                     optional, output wid x hei
  *   | Format   | png |                         optional, fmt=
+ *   | Fallback | trp-offer |                   optional layered recipe used until
+ *                                               the template is published (recipes.js)
  *   | $expiry  | 12.31.2026 |                  shared parameter (all tiles)
  *   | $line1 | $line2 | $discount1 | ... |     header row: parameter names
  *   | TRP Brake | Brake Chambers | 6 | ... |   one row per tile
@@ -14,7 +16,9 @@
  * Each tile builds: {server}/is/image/{template}?$name=value&...&wid=&hei=&fmt=
  */
 
-const CONFIG_KEYS = ['template', 'server', 'size', 'format', 'alt'];
+import recipeURL from './recipes.js';
+
+const CONFIG_KEYS = ['template', 'server', 'size', 'format', 'alt', 'fallback'];
 const DEFAULT_SERVER = 'https://s7d9.scene7.com';
 
 const cellText = (cell) => (cell?.textContent ?? '').trim();
@@ -23,7 +27,7 @@ const dimensions = (size) => (size || '').split(/[x,×]/i).map((n) => parseInt(n
 
 function parse(block) {
   const config = {
-    template: '', server: DEFAULT_SERVER, size: '', format: 'png', alt: '',
+    template: '', server: DEFAULT_SERVER, size: '', format: 'png', alt: '', fallback: '',
   };
   const shared = {};
   let header = null;
@@ -106,11 +110,21 @@ export default function decorate(block) {
     img.loading = index < 3 ? 'eager' : 'lazy';
     if (wid) img.width = wid;
     if (hei) img.height = hei;
-    img.addEventListener('error', () => {
+    const source = document.createElement('a');
+    img.addEventListener('error', function onError() {
+      const recipe = recipeURL(config.fallback, config.server, params);
+      if (recipe && img.src !== recipe) {
+        // eslint-disable-next-line no-console
+        console.info(`dm-template: template unavailable, using "${config.fallback}" layered recipe for tile ${index + 1}.`);
+        img.src = recipe;
+        source.href = recipe;
+        return;
+      }
+      img.removeEventListener('error', onError);
       // eslint-disable-next-line no-console
-      console.error(`dm-template: Dynamic Media could not render tile ${index + 1}: ${url}`);
+      console.error(`dm-template: Dynamic Media could not render tile ${index + 1}: ${img.src}`);
       img.replaceWith(fallback(params));
-    }, { once: true });
+    });
 
     let media = img;
     if (href) {
@@ -118,7 +132,6 @@ export default function decorate(block) {
       media.href = href;
       media.append(img);
     }
-    const source = document.createElement('a');
     source.className = 'dm-template-url';
     source.href = url;
     source.target = '_blank';
