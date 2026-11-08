@@ -8,7 +8,7 @@
  *   |                       | discount1: 6  discount2: 25 ...   |
  * The first cell is the product image ($product); the second holds one
  * "name: value" per line. A single pipe-delimited line is also accepted
- * (cards-offers style) and mapped to DEFAULTS.order.
+ * (cards-offers style) and mapped to PIPE_ORDER.
  *
  * Optional setting rows override DEFAULTS:
  *   | Template | CEM/xsc-offer-tile |   | Server | https://s7d9.scene7.com |
@@ -30,8 +30,10 @@ const DEFAULTS = {
   alt: '',
   fallback: 'trp-offer',
   image: 'product',
-  order: ['line1', 'line2', 'discount1', 'discount2', 'expiry'],
+  order: ['line1', 'discount1', 'expiry'],
 };
+// cards-offers pipe format: line1 | line2 | discount1 | discount2 | expiry
+const PIPE_ORDER = ['line1', 'line2', 'discount1', 'discount2', 'expiry'];
 const PAIR = /^\$?([\w-]+)\s*:\s*(.*)$/;
 
 const cellText = (cell) => (cell?.textContent ?? '').trim();
@@ -51,7 +53,7 @@ function cellValues(cell) {
     return Object.fromEntries(lines.map((line) => line.match(PAIR).slice(1, 3)));
   }
   const parts = lines.join(' | ').split('|').map((part) => part.trim());
-  return Object.fromEntries(DEFAULTS.order.map((name, i) => [name, parts[i] || '']));
+  return Object.fromEntries(PIPE_ORDER.map((name, i) => [name, parts[i] || '']).filter(([, v]) => v));
 }
 
 function parse(block) {
