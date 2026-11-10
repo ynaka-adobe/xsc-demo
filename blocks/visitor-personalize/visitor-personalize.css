@@ -1,0 +1,134 @@
+.visitor-personalize {
+  --vp-accent: #3b63fb;
+  --vp-ink: #131313;
+
+  display: grid;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.visitor-personalize-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px 20px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: var(--light-color);
+  font-size: var(--body-font-size-xs);
+}
+
+.visitor-personalize-label {
+  align-self: center;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dark-color);
+}
+
+.visitor-personalize-controls label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--dark-color);
+}
+
+.visitor-personalize-controls select {
+  min-width: 160px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 16px;
+}
+
+.visitor-personalize-reset {
+  margin: 0;
+  padding: 7px 14px;
+  border: 1px solid var(--vp-accent);
+  border-radius: 18px;
+  background: transparent;
+  color: var(--vp-accent);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.visitor-personalize-stage {
+  display: grid;
+  gap: 16px;
+}
+
+.visitor-personalize-experience {
+  padding: 36px 32px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #1b2a6b 0%, var(--vp-accent) 100%);
+  color: #fff;
+}
+
+.visitor-personalize-experience h2 {
+  margin: 0 0 12px;
+  color: #fff;
+}
+
+.visitor-personalize-experience p {
+  margin: 0 0 12px;
+}
+
+.visitor-personalize-eyebrow {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.visitor-personalize-experience .button {
+  margin: 8px 0 0;
+  border-color: #fff;
+  background: #fff;
+  color: var(--vp-accent);
+}
+
+.visitor-personalize-profile {
+  padding: 18px 20px;
+  border: 1px solid #e3e3e3;
+  border-radius: 12px;
+}
+
+.visitor-personalize-profile h3 {
+  margin: 0 0 10px;
+  font-size: var(--heading-font-size-xs);
+}
+
+.visitor-personalize-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px 20px;
+  margin: 0;
+}
+
+.visitor-personalize-facts dt {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dark-color);
+}
+
+.visitor-personalize-facts dd {
+  margin: 2px 0 0;
+  font-size: var(--body-font-size-xs);
+}
+
+.visitor-personalize-loading {
+  color: var(--dark-color);
+}
+
+@media (width >= 900px) {
+  .visitor-personalize-stage {
+    grid-template-columns: 3fr 2fr;
+    align-items: start;
+  }
+}
