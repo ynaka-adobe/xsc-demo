@@ -1,4 +1,6 @@
-const label = (s) => String(s || '').replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+const label = (s) => String(s || '').split('-')
+  .map((w) => (w.length <= 2 ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+  .join(' ');
 
 function simLink(text, param, value, active) {
   const url = new URL(window.location.pathname, window.location.origin);
@@ -51,7 +53,7 @@ export default function decorate(block) {
   (ns.audiences || []).forEach(({ config }) => {
     if (!config) return;
     const current = config.selectedAudience || 'default';
-    const options = Object.keys(config.configuredAudiences || {});
+    const options = [...Object.keys(config.configuredAudiences || {}), 'default'];
     list.append(row(
       'Audience',
       label(current),
