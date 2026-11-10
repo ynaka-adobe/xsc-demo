@@ -39,14 +39,14 @@ const SIM_COUNTRIES = {
   AU: 'Australia',
 };
 const SIM_CITIES = {
-  US: ['New York', 'NY', 'NA'],
-  CA: ['Toronto', 'ON', 'NA'],
-  MX: ['Mexico City', 'CMX', 'NA'],
-  GB: ['London', 'ENG', 'EU'],
-  DE: ['Munich', 'BY', 'EU'],
-  FR: ['Paris', 'IDF', 'EU'],
-  JP: ['Tokyo', '13', 'AS'],
-  AU: ['Sydney', 'NSW', 'OC'],
+  US: ['New York', 'NY', 'NA', 'America/New_York'],
+  CA: ['Toronto', 'ON', 'NA', 'America/Toronto'],
+  MX: ['Mexico City', 'CMX', 'NA', 'America/Mexico_City'],
+  GB: ['London', 'ENG', 'EU', 'Europe/London'],
+  DE: ['Munich', 'BY', 'EU', 'Europe/Berlin'],
+  FR: ['Paris', 'IDF', 'EU', 'Europe/Paris'],
+  JP: ['Tokyo', '', 'AS', 'Asia/Tokyo'],
+  AU: ['Sydney', 'NSW', 'OC', 'Australia/Sydney'],
 };
 const SIM_LANGUAGES = {
   '': 'Your browser',
@@ -98,9 +98,9 @@ function buildProfile(network, sim) {
     ? new Intl.DisplayNames([primary, 'en'], { type: 'region' }).of(countryCode)
     : '';
   const languageName = new Intl.DisplayNames([primary, 'en'], { type: 'language' }).of(primary);
-  const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
+  const timeZone = simCountry ? simCountry[3] : Intl.DateTimeFormat().resolvedOptions().timeZone;
   const now = new Date();
-  const hour = now.getHours();
+  const hour = Number(new Intl.DateTimeFormat('en-US', { hour: 'numeric', hourCycle: 'h23', timeZone }).format(now));
   let greeting = 'Good evening';
   if (hour < 12) greeting = 'Good morning';
   else if (hour < 18) greeting = 'Good afternoon';
@@ -115,8 +115,10 @@ function buildProfile(network, sim) {
     locale: lang,
     timeZone,
     greeting,
-    localTime: now.toLocaleTimeString(lang, { hour: 'numeric', minute: '2-digit' }),
-    date: now.toLocaleDateString(lang, { weekday: 'long', month: 'long', day: 'numeric' }),
+    localTime: now.toLocaleTimeString(lang, { hour: 'numeric', minute: '2-digit', timeZone }),
+    date: now.toLocaleDateString(lang, {
+      weekday: 'long', month: 'long', day: 'numeric', timeZone,
+    }),
     source: simCountry ? 'Simulated' : network.source,
     simulated: !!(sim.country || sim.language),
   };

@@ -84,7 +84,7 @@
   opacity: 0.85;
 }
 
-.visitor-personalize-experience .button {
+.visitor-personalize .visitor-personalize-experience a.button {
   margin: 8px 0 0;
   border-color: #fff;
   background: #fff;
