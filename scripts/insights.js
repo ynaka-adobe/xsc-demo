@@ -55,8 +55,9 @@ const state = {
   categories: new Map(),
   page: null,
   identity: null,
+  visitor: { network: null, browser: null },
   // `<details>` open state must survive the panel's full re-render on each event
-  open: { identity: true, signals: false },
+  open: { identity: true, signals: false, visitor: true },
 };
 
 let refs = null;
@@ -247,6 +248,113 @@ function provenance(kind) {
   return chip;
 }
 
+/* ──────────────────────────────── visitor ──────────────────────────────── */
+
+const titleCase = (v) => String(v || '').replace(/\b\p{L}/gu, (c) => c.toUpperCase());
+const join = (...parts) => parts.filter(Boolean).join(', ');
+
+/** IP and IP-based location, looked up by the edge function at the CDN. */
+async function loadNetwork() {
+  try {
+    const resp = await fetch('/auth/geo', { cache: 'no-store', credentials: 'same-origin' });
+    if (!resp.ok) throw new Error(resp.status);
+    state.visitor.network = await resp.json();
+  } catch {
+    state.visitor.network = { error: true };
+  }
+}
+
+/** What the browser itself reports — no permission prompts, nothing stored. */
+async function loadBrowser() {
+  const nav = window.navigator;
+  const uad = nav.userAgentData;
+  let hints = {};
+  try {
+    hints = uad ? await uad.getHighEntropyValues(['platformVersion', 'model', 'fullVersionList']) : {};
+  } catch {
+    // client hints unavailable
+  }
+  const brand = (hints.fullVersionList || uad?.brands || [])
+    .find((b) => !/not.?a.?brand|chromium/i.test(b.brand));
+  const ua = nav.userAgent;
+  const fallbackBrowser = (ua.match(/(Edg|Firefox|Chrome|Version)\/([\d.]+)/) || []).slice(1).join(' ')
+    .replace(/^Version/, 'Safari').replace(/^Edg/, 'Edge');
+  const conn = nav.connection;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const mq = (q) => window.matchMedia(q).matches;
+  state.visitor.browser = [
+    ['Browser', brand ? `${brand.brand} ${brand.version}` : fallbackBrowser],
+    ['Platform', join(uad?.platform || nav.platform, hints.platformVersion, hints.model) || '—'],
+    ['Device type', (uad ? uad.mobile : /Mobi/.test(ua)) ? 'Mobile' : 'Desktop'],
+    ['Language', (nav.languages || [nav.language]).slice(0, 3).join(', ')],
+    ['Time zone', `${tz} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}`],
+    ['Screen', `${window.screen.width}×${window.screen.height} @${window.devicePixelRatio}x`],
+    ['Viewport', `${window.innerWidth}×${window.innerHeight}`],
+    ['Hardware', join(nav.hardwareConcurrency && `${nav.hardwareConcurrency} cores`, nav.deviceMemory && `${nav.deviceMemory}+ GB`) || '—'],
+    ['Connection', conn ? join(conn.effectiveType, conn.downlink && `${conn.downlink} Mbps`, conn.saveData && 'save-data') : '—'],
+    ['Preferences', join(mq('(prefers-color-scheme: dark)') ? 'Dark mode' : 'Light mode', mq('(prefers-reduced-motion: reduce)') && 'Reduced motion', nav.globalPrivacyControl && 'GPC on')],
+    ['Input', mq('(pointer: coarse)') ? 'Touch' : 'Mouse / trackpad'],
+    ['Referrer', document.referrer ? new URL(document.referrer).hostname : 'Direct'],
+  ];
+}
+
+function renderRows(rows) {
+  const dl = el('dl', 'insights-observations');
+  rows.forEach(([label, value, note]) => {
+    const row = el('div');
+    row.append(el('dt', null, label));
+    const dd = el('dd');
+    dd.append(el('strong', null, value || '—'));
+    if (note) dd.append(el('span', 'insights-note', note));
+    row.append(dd);
+    dl.append(row);
+  });
+  return dl;
+}
+
+/** The visitor's network location (from the CDN) and browser/device context. */
+function renderVisitor() {
+  const section = el('details', 'insights-section insights-signals insights-visitor');
+  section.open = state.open.visitor;
+  section.addEventListener('toggle', () => { state.open.visitor = section.open; });
+
+  const { network: n, browser } = state.visitor;
+  const summary = el('summary', 'insights-heading insights-signals-summary');
+  summary.append(el('span', null, 'Visitor'));
+  const where = n && !n.error ? join(titleCase(n.city), n.countryCode) : '';
+  summary.append(el('span', `insights-badge ${where ? 'insights-badge-live' : ''}`.trim(), where || 'Locating…'));
+  section.append(summary);
+
+  section.append(el('h4', 'insights-subheading', 'Network — from the CDN'));
+  if (!n) {
+    section.append(renderEmpty('Looking up this connection…'));
+  } else if (n.error) {
+    section.append(renderEmpty('Location lookup unavailable on this host.'));
+  } else {
+    section.append(renderRows([
+      ['IP address', n.ip, n.proxy ? `Proxy: ${n.proxy}` : ''],
+      ['City', join(titleCase(n.city), n.region, n.postalCode)],
+      ['Country', join(titleCase(n.country), n.continent)],
+      ['Coordinates', n.latitude !== '' ? `${n.latitude}, ${n.longitude}` : '', 'City-level, IP-based'],
+      ['Network', titleCase(n.network), n.asn ? `AS${n.asn}` : ''],
+      ['Connection', n.connection],
+    ]));
+  }
+
+  section.append(el('h4', 'insights-subheading', 'Browser — reported by this device'));
+  section.append(browser ? renderRows(browser) : renderEmpty('Reading browser details…'));
+  section.append(provenance('measured'));
+
+  section.append(el(
+    'p',
+    'insights-disclaimer',
+    'Location comes from an IP lookup at the edge, so a VPN or corporate network '
+    + 'shows where its exit point is, not the visitor. Shown in this panel only — '
+    + 'none of it is written to storage or pushed to the data layer.',
+  ));
+  return section;
+}
+
 /* ─────────────────────────── real-time identity ────────────────────────── */
 
 /**
@@ -427,6 +535,7 @@ function render() {
   stats.append(renderStat('Scroll', state.scroll ? `${state.scroll}%` : '—'));
   body.append(stats);
   body.append(renderContext());
+  body.append(renderVisitor());
 
   // ── identity (above Observations: the profile frames everything below it)
   body.append(renderIdentity());
@@ -578,6 +687,8 @@ async function mount() {
       // identity capture is independent of the data layer — personal data must
       // not travel on the channel that forwards to Adobe (see identity.js)
       observeIdentity();
+      loadNetwork().then(scheduleRender);
+      loadBrowser().then(scheduleRender);
       build();
       subscribe((entry) => {
         record(entry);
