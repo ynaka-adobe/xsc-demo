@@ -288,7 +288,7 @@ async function loadBrowser() {
     ['Device type', (uad ? uad.mobile : /Mobi/.test(ua)) ? 'Mobile' : 'Desktop'],
     ['Language', (nav.languages || [nav.language]).slice(0, 3).join(', ')],
     ['Time zone', `${tz} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}`],
-    ['Screen', `${window.screen.width}×${window.screen.height} @${window.devicePixelRatio}x`],
+    ['Screen', `${window.screen.width}×${window.screen.height} @${+window.devicePixelRatio.toFixed(2)}x`],
     ['Viewport', `${window.innerWidth}×${window.innerHeight}`],
     ['Hardware', join(nav.hardwareConcurrency && `${nav.hardwareConcurrency} cores`, nav.deviceMemory && `${nav.deviceMemory}+ GB`) || '—'],
     ['Connection', conn ? join(conn.effectiveType, conn.downlink && `${conn.downlink} Mbps`, conn.saveData && 'save-data') : '—'],
