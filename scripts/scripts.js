@@ -21,6 +21,35 @@ import {
   loadTarget,
   applyTargetHeroMboxIfConfigured,
 } from './target.js';
+import {
+  runExperimentation,
+  runExperimentationLazy,
+} from './experiment-loader.js';
+
+/* Geo from the edge function; only resolves on the production domain. */
+let geoPromise;
+const visitorGeo = () => {
+  if (!geoPromise) {
+    geoPromise = fetch('/auth/geo', { signal: AbortSignal.timeout(1500) })
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => ({}));
+  }
+  return geoPromise;
+};
+
+const experimentationConfig = {
+  prodHost: 'xsc-demo.ynaka-adobe.com',
+  audiences: {
+    mobile: () => window.innerWidth < 600,
+    desktop: () => window.innerWidth >= 600,
+    us: async () => (await visitorGeo()).countryCode === 'US',
+    'non-us': async () => {
+      const { countryCode } = await visitorGeo();
+      return !!countryCode && countryCode !== 'US';
+    },
+    europe: async () => (await visitorGeo()).continent === 'EU',
+  },
+};
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -146,6 +175,7 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   doc.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  await runExperimentation(doc, experimentationConfig);
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;
   }
@@ -187,6 +217,8 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  await runExperimentationLazy(doc, experimentationConfig);
 
   import('./analytics.js').then(({ initDataLayer }) => initDataLayer());
 }

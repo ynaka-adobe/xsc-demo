@@ -29,6 +29,8 @@ export function debug(...args) {
   }
 }
 
+export const VERSION = '2.0.0';
+
 export const DEFAULT_OPTIONS = {
 
   // Audiences related properties
@@ -46,7 +48,16 @@ export const DEFAULT_OPTIONS = {
 
   // Redecoration function for fragments
   decorateFunction: () => {},
+
+  // Which simulation UI to wire up in preview/dev environments:
+  // - 'auto' (default): wire up the AEM Sidekick panel if/when the Sidekick is present
+  // - 'sidekick': same as 'auto', but explicit
+  // - 'universal-editor': the panel is delivered as a UE extension, so stay out of the way
+  // - false: do not load any simulation UI
+  simulationUI: 'auto',
 };
+
+const CONSENT_STORAGE_KEY = 'experimentation-consented';
 
 /**
  * Converts a given comma-seperate string to an array.
@@ -83,6 +94,61 @@ async function onPageActivation(cb) {
     document.addEventListener('prerenderingchange', cb, { once: true });
   } else {
     cb();
+  }
+}
+
+/**
+ * Reads the current consent status from localStorage.
+ * @returns {Boolean} true if consent is given, false otherwise
+ */
+function getConsentFromStorage() {
+  try {
+    return localStorage.getItem(CONSENT_STORAGE_KEY) === 'true';
+  } catch (error) {
+    debug('Failed to read consent from localStorage:', error);
+    return false;
+  }
+}
+
+/**
+ * Writes the consent status to localStorage.
+ * Only stores consent when explicitly given (true).
+ * Removes the key when consent is denied or revoked (false).
+ * @param {Boolean} consented Whether the user has consented
+ */
+function setConsentInStorage(consented) {
+  try {
+    if (consented) {
+      localStorage.setItem(CONSENT_STORAGE_KEY, 'true');
+    } else {
+      localStorage.removeItem(CONSENT_STORAGE_KEY);
+    }
+  } catch (error) {
+    debug('Failed to save consent to localStorage:', error);
+  }
+}
+
+/**
+ * Checks if user has given consent for experimentation.
+ * @returns {Boolean} true if consent is given, false otherwise
+ */
+export function isUserConsentGiven() {
+  return getConsentFromStorage();
+}
+
+/**
+ * Sets the user consent status for experimentation.
+ * - If consent is given (true): stores the decision in localStorage
+ * - If consent is denied or revoked (false): removes any stored consent
+ * @param {Boolean} consented Whether the user has consented to experimentation
+ */
+export function updateUserConsent(consented) {
+  if (consented) {
+    setConsentInStorage(true);
+    debug('Experimentation consent granted and stored');
+  } else {
+    setConsentInStorage(false);
+    debug('Experimentation consent denied or revoked - storage cleared');
   }
 }
 
@@ -150,9 +216,13 @@ export function getMetadata(name) {
 /**
  * Gets all the metadata elements that are in the given scope.
  * @param {String} scope The scope/prefix for the metadata
+ * @param {Function} keyFn Transforms each metadata key. Defaults to `toCamelCase`
+ *   (config props like `startDate`, `requiresConsent`); pass `toClassName` to
+ *   preserve multi-word *names* (audience/campaign names must stay class-name to
+ *   match the project config + resolution).
  * @returns a map of key/value pairs for the given scope
  */
-export function getAllMetadata(scope) {
+export function getAllMetadata(scope, keyFn = toCamelCase) {
   const value = getMetadata(scope);
   const metaTags = document.head.querySelectorAll(`meta[name^="${scope}"], meta[property^="${scope}:"]`);
   return [...metaTags].reduce((res, meta) => {
@@ -162,8 +232,7 @@ export function getAllMetadata(scope) {
         : meta.getAttribute('property').substring(scope.length + 1),
     );
 
-    const camelCaseKey = toCamelCase(key);
-    res[camelCaseKey] = meta.getAttribute('content');
+    res[keyFn(key)] = meta.getAttribute('content');
     return res;
   }, value ? { value } : {});
 }
@@ -545,8 +614,12 @@ async function applyAllModifications(
 
   const configs = [];
 
-  // Full-page modifications
-  const pageMetadata = getAllMetadata(type);
+  // Full-page modifications. Experiments key their metadata by camelCased config
+  // props (`startDate`, `requiresConsent`, …); audiences/campaigns key by
+  // audience/campaign *name*, which must stay class-name to match the project
+  // config + resolution (as section- and fragment-level already do).
+  const keyFn = type === pluginOptions.experimentsMetaTagPrefix ? toCamelCase : toClassName;
+  const pageMetadata = getAllMetadata(type, keyFn);
   const pageNS = await modificationsHandler(
     document.querySelector('main'),
     pageMetadata,
@@ -639,13 +712,33 @@ async function getExperimentConfig(pluginOptions, metadata, overrides) {
     return null;
   }
 
+  const thumbnailMeta = document.querySelector('meta[property="og:image:secure_url"]')
+  || document.querySelector('meta[property="og:image"]');
+  const thumbnail = thumbnailMeta ? thumbnailMeta.getAttribute('content') : '';
+
   const audiences = stringToArray(metadata.audiences).map(toClassName);
 
   const splits = metadata.split
-    // custom split
-    ? stringToArray(metadata.split).map((i) => parseFloat(i) / 100)
-    // even split
-    : [...new Array(pages.length)].map(() => 1 / (pages.length + 1));
+    ? (() => {
+      const splitValues = stringToArray(metadata.split).map(
+        (i) => parseFloat(i) / 100,
+      );
+
+      // If fewer splits than pages, pad with zeros
+      if (splitValues.length < pages.length) {
+        return [
+          ...splitValues,
+          ...Array(pages.length - splitValues.length).fill(0),
+        ];
+      }
+
+      // If more splits than needed, truncate
+      if (splitValues.length > pages.length) {
+        return splitValues.slice(0, pages.length);
+      }
+
+      return splitValues;
+    })() : [...new Array(pages.length)].map(() => 1 / (pages.length + 1));
 
   const variantNames = [];
   variantNames.push('control');
@@ -684,17 +777,21 @@ async function getExperimentConfig(pluginOptions, metadata, overrides) {
 
   const startDate = metadata.startDate ? new Date(metadata.startDate) : null;
   const endDate = metadata.endDate ? new Date(metadata.endDate) : null;
+  const requiresConsent = metadata.requiresConsent === 'true';
 
   const config = {
     id,
-    label: `Experiment ${metadata.value || metadata.experiment}`,
+    label: metadata.label || `Experiment ${metadata.value || metadata.experiment}`,
     status: metadata.status || 'active',
     audiences,
+    requiresConsent,
     endDate,
+    optimizingTarget: metadata.optimizingTarget || 'conversion',
     resolvedAudiences,
     startDate,
     variants,
     variantNames,
+    thumbnail,
   };
 
   config.run = (
@@ -706,6 +803,8 @@ async function getExperimentConfig(pluginOptions, metadata, overrides) {
     && (!overrides.audience || audiences.includes(overrides.audience))
     && (!startDate || startDate <= Date.now())
     && (!endDate || endDate > Date.now())
+    // experiment has consent if required
+    && (!requiresConsent || isUserConsentGiven())
   );
 
   if (!config.run) {
@@ -831,11 +930,15 @@ function parseCampaignManifest(entries) {
   ))
     .map(aggregateEntries('campaign', ['campaign', 'url']))
     .map((e) => {
-      const campaigns = e.campaign;
+      // A selector with a single campaign leaves `campaign`/`url` as scalars
+      // (aggregateEntries only builds arrays for multi-value selectors), so
+      // normalize to arrays before iterating.
+      const campaigns = [].concat(e.campaign);
+      const urls = [].concat(e.url);
       delete e.campaign;
       e.campaigns = {};
       campaigns.forEach((a, i) => {
-        e.campaigns[toClassName(a)] = e.url[i];
+        e.campaigns[toClassName(a)] = urls[i];
       });
       delete e.url;
       return e;
@@ -911,11 +1014,15 @@ function parseAudienceManifest(entries) {
   ))
     .map(aggregateEntries('audience', ['audience', 'url']))
     .map((e) => {
-      const audiences = e.audience;
+      // A selector with a single audience leaves `audience`/`url` as scalars
+      // (aggregateEntries only builds arrays for multi-value selectors), so
+      // normalize to arrays before iterating.
+      const audiences = [].concat(e.audience);
+      const urls = [].concat(e.url);
       delete e.audience;
       e.audiences = {};
       audiences.forEach((a, i) => {
-        e.audiences[toClassName(a)] = e.url[i];
+        e.audiences[toClassName(a)] = urls[i];
       });
       delete e.url;
       return e;
@@ -955,11 +1062,102 @@ async function serveAudience(document, pluginOptions) {
   );
 }
 
+// sessionStorage key used to re-open the simulation panel after a variant
+// switch forces a full-page reload. The reload handler below writes it; the
+// lazily-loaded simulation UI reads it (see src/simulation.js).
+const SIMULATION_PANEL_REOPEN_KEY = 'aem-experimentation-simulation-open';
+
+let isCommunicationLayerInitialized = false;
+
+/**
+ * Sets up the `postMessage` handshake the hosted simulation panel talks over.
+ *
+ * This is deliberately the *only* piece of simulation wiring that lives in the
+ * eager engine: it is a tiny message listener (no UI, no heavy MFE code) and it
+ * must be registered as early as possible. The AEM Sidekick bookmarklet can
+ * inject the panel's `client.js` during page load — before the lazy phase runs
+ * — and the MFE's config request is one-shot, so a listener registered only in
+ * `loadLazy` would miss it and the panel would come up blank/stale. The heavy
+ * MFE loader still lives in the lazily-imported `simulation.js`, so production
+ * pages neither download nor parse any of the panel UI.
+ *
+ * Both `loadEager` and `loadLazy` may call this; the guard makes every call
+ * after the first a no-op.
+ * @param {Object} options the plugin options
+ */
+function setupCommunicationLayer(options) {
+  if (isCommunicationLayerInitialized) {
+    return;
+  }
+  isCommunicationLayerInitialized = true;
+  window.addEventListener('message', async (event) => {
+    if (event.data && event.data.type === 'hlx:last-modified-request') {
+      const { url } = event.data;
+
+      try {
+        const response = await fetch(url, {
+          method: 'HEAD',
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        });
+
+        const lastModified = response.headers.get('Last-Modified');
+
+        event.source.postMessage(
+          {
+            type: 'hlx:last-modified-response',
+            url,
+            lastModified,
+            status: response.status,
+          },
+          event.origin,
+        );
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching Last-Modified header:', error);
+      }
+    } else if (event.data?.type === 'hlx:experimentation-get-config') {
+      try {
+        const safeClone = JSON.parse(JSON.stringify(window.hlx));
+        if (options.prodHost) {
+          safeClone.prodHost = options.prodHost;
+        }
+        event.source.postMessage(
+          {
+            type: 'hlx:experimentation-config',
+            config: safeClone,
+            source: 'index-js',
+          },
+          '*',
+        );
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error sending hlx config:', e);
+      }
+    } else if (
+      event.data?.type === 'hlx:experimentation-window-reload'
+      && event.data?.action === 'reload'
+    ) {
+      // Preserve the panel's open state across the reload so it re-opens once
+      // the page comes back (see setupSimulationUI in src/simulation.js).
+      try {
+        window.sessionStorage.setItem(SIMULATION_PANEL_REOPEN_KEY, 'true');
+      } catch (e) {
+        debug('Failed to persist simulation panel state:', e);
+      }
+      window.location.reload();
+    }
+  });
+}
+
 export async function loadEager(document, options = {}) {
   const pluginOptions = { ...DEFAULT_OPTIONS, ...options };
   setDebugMode(window.location, pluginOptions);
 
   const ns = window.aem || window.hlx || {};
+  ns.experimentation = { version: VERSION };
   ns.audiences = await serveAudience(document, pluginOptions);
   ns.experiments = await runExperiment(document, pluginOptions);
   ns.campaigns = await runCampaign(document, pluginOptions);
@@ -968,20 +1166,53 @@ export async function loadEager(document, options = {}) {
   ns.experiment = ns.experiments.find((e) => e.type === 'page');
   ns.audience = ns.audiences.find((e) => e.type === 'page');
   ns.campaign = ns.campaigns.find((e) => e.type === 'page');
+
+  // Register the (tiny, UI-less) simulation handshake as early as possible so
+  // an eagerly-injected Sidekick bookmarklet doesn't race past it. Preview/dev
+  // only; the heavy panel UI is still deferred to loadLazy.
+  if (isDebugEnabled) {
+    setupCommunicationLayer(pluginOptions);
+  }
 }
 
+/**
+ * Loads the simulation UI used to preview and switch experiment variants.
+ *
+ * Since v2 the simulation panel is a hosted micro-frontend that the AEM Sidekick
+ * extension opens on demand. It is an authoring aid, so it only runs in
+ * preview/development environments, never in production. The actual UI lives in
+ * a separate `simulation.js` module that is dynamically imported only when
+ * needed, so its code never ships or parses with the core engine.
+ *
+ * In the Universal Editor the panel is delivered as a UE extension instead, so
+ * pass `simulationUI: 'universal-editor'` (or `false`) to keep the plugin out of
+ * the way there. The default `'auto'` only activates when the Sidekick is present.
+ *
+ * Call this from your project's `loadLazy()` in `scripts.js`, alongside the
+ * `loadEager()` call in `loadEager()`.
+ *
+ * @param {Document} document The document object.
+ * @param {Object} options The experimentation configuration.
+ */
 export async function loadLazy(document, options = {}) {
   const pluginOptions = { ...DEFAULT_OPTIONS, ...options };
-  // do not show the experimentation pill on prod domains
-  if (!isDebugEnabled) {
+
+  // Authoring aid only — never surface the simulation UI in production.
+  if (!setDebugMode(window.location, pluginOptions)) {
     return;
   }
-  // eslint-disable-next-line import/no-unresolved
-  const preview = await import('https://opensource.adobe.com/aem-experimentation/preview.js');
-  const context = {
-    getMetadata,
-    toClassName,
-    debug,
-  };
-  preview.default.call(context, document, pluginOptions);
+
+  // In the Universal Editor a dedicated UE extension owns the panel.
+  if (pluginOptions.simulationUI === false || pluginOptions.simulationUI === 'universal-editor') {
+    return;
+  }
+
+  // Ensure the postMessage handshake is available even on preview pages that had
+  // no experiment configured when loadEager ran. No-op if already registered.
+  setupCommunicationLayer(pluginOptions);
+
+  // Load the simulation/preview UI on demand so it never ships with the engine.
+  // eslint-disable-next-line import/extensions
+  const { default: setupSimulation } = await import('./simulation.js');
+  setupSimulation(pluginOptions, document, SIMULATION_PANEL_REOPEN_KEY);
 }
