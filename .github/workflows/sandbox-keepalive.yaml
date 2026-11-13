@@ -17,7 +17,11 @@ jobs:
           fail=0
           for url in \
             "https://author-p154856-e1944736.adobeaemcloud.com/libs/granite/core/content/login.html?keepalive=$ts" \
-            "https://publish-p154856-e1944736.adobeaemcloud.com/?keepalive=$ts"; do
+            "https://publish-p154856-e1944736.adobeaemcloud.com/?keepalive=$ts" \
+            "https://author-p154856-e1944904.adobeaemcloud.com/libs/granite/core/content/login.html?keepalive=$ts" \
+            "https://publish-p154856-e1944904.adobeaemcloud.com/content/demo/en/home.html?keepalive=$ts" \
+            "https://author-p154856-e2305186.adobeaemcloud.com/libs/granite/core/content/login.html?keepalive=$ts" \
+            "https://publish-p154856-e2305186.adobeaemcloud.com/content/demo/en/home.html?keepalive=$ts"; do
             code=$(curl -s -o /tmp/body -w '%{http_code}' -m 60 "$url" || echo 000)
             echo "$code $url"
             if grep -qi 'hibernat' /tmp/body; then
