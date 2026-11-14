@@ -18,7 +18,9 @@ function landingUrl(path, audience) {
   return url.toString();
 }
 
-function resultItem({ org, title, description, href, image, featured }) {
+function resultItem({
+  org, title, description, href, image, featured,
+}) {
   const item = el('li', `discovery-search-result${featured ? ' featured' : ''}`);
   const main = el('div', 'discovery-search-main');
   const site = el('div', 'discovery-search-site');
@@ -79,7 +81,12 @@ export default function decorate(block) {
   rows.filter((row) => row.kind === 'featured').forEach((row) => {
     const [org, title, description, , image] = row.cells;
     list.append(resultItem({
-      org: text(org), title: text(title), description: text(description), href, image, featured: true,
+      org: text(org),
+      title: text(title),
+      description: text(description),
+      href,
+      image,
+      featured: true,
     }));
   });
   rows.filter((row) => row.kind === 'result').forEach((row) => {

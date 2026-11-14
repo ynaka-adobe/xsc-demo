@@ -124,5 +124,9 @@
 
 @media (width <= 600px) {
   .discovery-chat .discovery-chat-user { max-width: 90%; }
-  .discovery-chat .discovery-chat-thumb img { width: 64px; height: 64px; }
+
+  .discovery-chat .discovery-chat-thumb img {
+    width: 64px;
+    height: 64px;
+  }
 }

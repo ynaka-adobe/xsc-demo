@@ -9,7 +9,7 @@ async function runtimeFetch(params) {
   return resp.json();
 }
 
-/** Mbox names referenced on this page: the hero-mbox meta tag and any decorated target-offer blocks. */
+/** Mbox names on this page: the hero-mbox meta tag and any decorated target-offer blocks. */
 function pageMboxNames() {
   const names = new Set();
   const heroMbox = getMetadata('target-mbox-hero')?.trim();
@@ -49,6 +49,7 @@ async function fetchAudiencesForMboxes(mboxNames) {
 
 function closeList() {
   document.querySelector('.audiences-list')?.remove();
+  // eslint-disable-next-line no-use-before-define
   document.removeEventListener('click', onOutsideClick, true);
 }
 
@@ -93,7 +94,7 @@ function renderList(audiences) {
   addOption('Default', null, !current);
   if (!audiences.length) {
     const li = document.createElement('li');
-    li.className = 'audiences-list__empty';
+    li.className = 'audiences-list-empty';
     li.textContent = 'No active audiences for this page.';
     list.append(li);
   } else {
@@ -117,7 +118,7 @@ export default async function showAudiences() {
 
   const list = document.createElement('ul');
   list.className = 'audiences-list';
-  list.innerHTML = '<li class="audiences-list__empty">Loading…</li>';
+  list.innerHTML = '<li class="audiences-list-empty">Loading…</li>';
   document.body.append(list);
 
   const mboxNames = pageMboxNames();

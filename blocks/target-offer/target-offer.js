@@ -30,7 +30,7 @@ function buildSlot(el) {
   const mboxPara = el.querySelector('p.target-offer-mbox');
   let mboxName = '';
   const slot = document.createElement('div');
-  slot.className = 'target-offer__slot';
+  slot.className = 'target-offer-slot';
 
   if (mboxPara) {
     mboxName = mboxPara.textContent.trim();
