@@ -2,7 +2,7 @@
  * Picker backend location. Resolution order: ?api= param, localStorage override, then default.
  * Endpoints are `${base}/browse`, `${base}/resolve`, `${base}/thumb`, `${base}/campaign-push`.
  */
-const DEPLOYED = ''; // set to the deployed App Builder web-action base once published
+const DEPLOYED = 'https://332794-xscassetpicker-stage.adobeioruntime.net/api/v1/web/xsc-asset-picker';
 const LOCAL = 'http://localhost:3100/api';
 
 export default function apiBase() {
