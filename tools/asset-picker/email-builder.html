@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Email Builder (3rd-party app demo)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/tools/asset-picker/email-builder.css">
+    <script type="module" src="/tools/asset-picker/email-builder.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <div class="app"><span class="mark" aria-hidden="true">✉</span><div><strong>Campaign Classic · Delivery editor</strong><small>Simulated third-party app. Content comes from AEM through the custom picker.</small></div></div>
+      <div class="fields">
+        <label>Delivery label <input id="label" value="Spring offer · EMEA"></label>
+        <label>Subject <input id="subject" value="Your spring offer is here"></label>
+      </div>
+      <div class="btns">
+        <button type="button" class="seg" id="view-desktop" aria-pressed="true">Desktop</button>
+        <button type="button" class="seg" id="view-mobile" aria-pressed="false">Mobile</button>
+        <button type="button" class="primary" id="push">Push to Campaign</button>
+      </div>
+    </header>
+    <div class="layout">
+      <main class="canvas-wrap"><div class="email" id="email" aria-label="Email canvas"></div></main>
+      <aside class="side">
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" id="t-html" aria-selected="true">Email HTML</button>
+          <button type="button" role="tab" id="t-camp" aria-selected="false">Campaign log</button>
+        </div>
+        <pre class="panel" id="p-html"></pre>
+        <div class="panel" id="p-camp" hidden><p class="hint">Nothing pushed yet. Fill the slots and choose “Push to Campaign”.</p></div>
+      </aside>
+    </div>
+    <dialog id="dlg" aria-label="Choose from AEM">
+      <div class="dlg-head"><strong id="dlg-title">Choose from AEM</strong><button type="button" id="dlg-close" aria-label="Close">✕</button></div>
+      <iframe id="frame" title="AEM picker"></iframe>
+    </dialog>
+    <div class="toast" id="toast" role="status"></div>
+  </body>
+</html>

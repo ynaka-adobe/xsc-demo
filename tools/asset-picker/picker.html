@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>AEM Asset Picker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/tools/asset-picker/picker.css">
+    <script type="module" src="/tools/asset-picker/picker.js"></script>
+  </head>
+  <body>
+    <div class="picker" id="picker">
+      <header class="bar">
+        <div class="brand"><span class="logo" aria-hidden="true">Ae</span><strong>AEM Picker</strong><span class="env" id="env"></span></div>
+        <div class="tabs" role="tablist" id="tabs"></div>
+        <form class="search" id="search" role="search">
+          <input type="search" id="q" placeholder="Search" aria-label="Search" autocomplete="off">
+        </form>
+      </header>
+      <nav class="crumbs" id="crumbs" aria-label="Location"></nav>
+      <main class="body" id="body" aria-live="polite"></main>
+      <footer class="foot">
+        <div class="sel" id="sel">Nothing selected</div>
+        <div class="actions">
+          <button type="button" class="ghost" id="cancel">Cancel</button>
+          <button type="button" class="primary" id="confirm" disabled>Select</button>
+        </div>
+      </footer>
+      <pre class="out" id="out" hidden></pre>
+    </div>
+  </body>
+</html>
