@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {{#data.testModelByPath.item}}
+  <title>{{title}}</title>
+  <meta name="description" content="{{title}} - rendered from an AEM Content Fragment">
+  <meta name="cf-path" content="{{_path}}">
+  {{/data.testModelByPath.item}}
+</head>
+<body>
+  <header></header>
+  <main>
+    {{#data.testModelByPath.item}}
+    <div>
+      <h1>{{title}}</h1>
+      {{{Description.html}}}
+    </div>
+    <div>
+      <p><em>Rendered by JSON2HTML from AEM Content Fragment <code>{{_path}}</code>, via the persisted GraphQL query <code>global/xsc-fragment</code>.</em></p>
+    </div>
+    {{/data.testModelByPath.item}}
+  </main>
+  <footer></footer>
+</body>
+</html>
