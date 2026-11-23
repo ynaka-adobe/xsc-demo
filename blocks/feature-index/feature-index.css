@@ -97,3 +97,7 @@ main a.feature-index-item:hover .feature-index-arrow {
     top: calc(var(--nav-height) + 32px);
   }
 }
+
+main .feature-index-wrapper + .feature-index-wrapper .feature-index {
+  padding-top: 32px;
+}
