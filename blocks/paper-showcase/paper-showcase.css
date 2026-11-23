@@ -109,6 +109,12 @@ main .paper-showcase-browser .paper-browser-page > p {
   color: var(--gray-700);
 }
 
+main .paper-showcase-browser .paper-browser-page > p:first-child {
+  margin-bottom: 14px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
 main .paper-browser-page picture img {
   display: block;
   width: 100%;
