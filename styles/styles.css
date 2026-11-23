@@ -295,3 +295,54 @@ main .section.recommendations h2 {
   margin-top: 16px;
   font-size: var(--heading-font-size-m);
 }
+
+/* spectrum utilities: eyebrow label, pill button, text link */
+main .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--link-color);
+}
+
+main a.pill-button:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  background: var(--text-color);
+  color: var(--background-color);
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+main a.pill-button::after {
+  content: '→';
+}
+
+main a.pill-button:hover {
+  background: #000;
+  color: var(--background-color);
+}
+
+main a.text-link:any-link {
+  color: var(--text-color);
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+main a.pill-button.accent:any-link {
+  background: var(--link-color);
+}
+
+main a.pill-button.accent:hover {
+  background: var(--link-hover-color);
+}

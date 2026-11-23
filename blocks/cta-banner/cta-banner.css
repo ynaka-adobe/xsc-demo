@@ -1,17 +1,17 @@
-main .paper-cta {
+main .cta-banner {
   margin: 32px 0 0;
   padding: 72px 32px;
   border-radius: var(--radius-l);
   background: #f8f8f8;
 }
 
-main .paper-cta-inner {
+main .cta-banner-inner {
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
-main .paper-cta h2 {
+main .cta-banner h2 {
   margin: 0;
   max-width: 720px;
   font-size: clamp(36px, 4vw, 56px);
@@ -19,26 +19,18 @@ main .paper-cta h2 {
   letter-spacing: -0.03em;
 }
 
-main .paper-cta p {
+main .cta-banner p {
   margin: 0;
   font-size: 18px;
   color: var(--gray-700);
 }
 
-main a.paper-btn.paper-btn-accent:any-link {
-  background: var(--link-color);
-}
-
-main a.paper-btn.paper-btn-accent:hover {
-  background: var(--link-hover-color);
-}
-
 @media (width >= 900px) {
-  main .paper-cta {
+  main .cta-banner {
     padding: 96px 64px;
   }
 
-  main .paper-cta-inner {
+  main .cta-banner-inner {
     flex-flow: row wrap;
     align-items: flex-end;
     justify-content: space-between;
