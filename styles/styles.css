@@ -19,9 +19,12 @@
   --link-color: #3b63fb;
   --link-hover-color: #1d3ecf;
 
-  /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  /* fonts: Adobe Clean when installed, open-source Source Sans 3 otherwise */
+  --body-font-family: 'Adobe Clean', adobe-clean, 'Source Sans 3', source-sans-fallback, sans-serif;
+  --heading-font-family: var(--body-font-family);
+  --gray-200: #e1e1e1;
+  --gray-700: #4b4b4b;
+  --radius-l: 24px;
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -43,6 +46,12 @@
 }
 
 /* fallback fonts */
+@font-face {
+  font-family: source-sans-fallback;
+  size-adjust: 95%;
+  src: local('Arial');
+}
+
 @font-face {
   font-family: roboto-condensed-fallback;
   size-adjust: 88.82%;
@@ -115,8 +124,9 @@ h6 {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
   font-family: var(--heading-font-family);
-  font-weight: 600;
-  line-height: 1.25;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   scroll-margin: 40px;
 }
 
@@ -185,7 +195,7 @@ button {
   padding: 0.5em 1.2em;
   font-family: var(--body-font-family);
   font-style: normal;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.25;
   text-align: center;
   text-decoration: none;

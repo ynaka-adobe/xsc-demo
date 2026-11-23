@@ -4,6 +4,7 @@ header .nav-wrapper {
   width: 100%;
   z-index: 2;
   position: fixed;
+  border-bottom: 1px solid var(--gray-200);
 }
 
 header nav {
@@ -18,7 +19,7 @@ header nav {
   max-width: 1248px;
   height: var(--nav-height);
   padding: 0 24px;
-  font-family: roboto, roboto-fallback, sans-serif;
+  font-family: var(--body-font-family);
 }
 
 header nav[aria-expanded='true'] {
