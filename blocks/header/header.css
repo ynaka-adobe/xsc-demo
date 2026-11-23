@@ -147,9 +147,29 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 header .nav-brand {
   grid-area: brand;
   flex-basis: 128px;
-  font-size: var(--heading-font-size-s);
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   line-height: 1;
+}
+
+header nav .nav-brand a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-color);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Spectrum-style solid "A" mark */
+header nav .nav-brand a::before {
+  content: '';
+  flex: none;
+  width: 26px;
+  height: 24px;
+  background: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 24'%3E%3Cpath d='M9 0h8l9 24h-7.4L13 8.2 9.6 17.5h4.6l2 6.5H0z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 header nav .nav-brand img {
