@@ -1,0 +1,43 @@
+<!doctype html><meta charset=utf-8><link rel=stylesheet href=s2.css><style>
+.arch{display:flex;align-items:stretch;gap:0;padding:48px;border:1px solid var(--border);border-radius:16px}
+.node{flex:1;display:flex;flex-direction:column;gap:6px;padding:20px;border:1px solid var(--border);border-radius:8px;background:#fff}
+.node.key{border:2px solid var(--accent)}
+.arr{align-self:center;width:48px;text-align:center;color:var(--muted)}
+.walk .row{align-items:center}
+.walk .n{width:80px;font-size:32px;font-weight:300;color:var(--accent)}
+</style>
+<div class="nav"><div class="logo"><svg width="24" height="21" viewBox="0 0 30 26"><path fill="#EB1000" d="M19 0h11v26zM11 0H0v26zM15 9.6L22 26h-4.6l-2-5.2h-5.1z"/></svg>XSC Demo</div><ul>
+<li>Brand Visibility</li>
+<li>Content Supply Chain</li>
+<li>CX Coworker</li>
+<li class=on>Solutions</li>
+<li>Workshops</li>
+<li>Customers</li>
+</ul><span class="btn">Sign in</span></div>
+<div style="padding:96px 64px 64px;display:flex;flex-direction:column;gap:24px">
+<div class=crumb><span>Solutions</span><span>·</span><span>Brand Visibility</span><span>·</span><span>AEM Sites + Okta</span></div>
+<h1 style="font-size:64px;max-width:1000px">Show the right content to the right partner — without a portal.</h1>
+<p class=lead>Attribute-based closed user groups: one site, gated by identity attributes from your IdP, enforced at the edge.</p>
+<div style="display:flex;gap:12px;padding-top:8px"><span class="btn primary">Start the walk-through</span><span class=btn>See it live</span></div></div>
+<section class=surface style="display:flex;gap:64px">
+<div style="width:360px;display:flex;flex-direction:column;gap:16px"><span class="small muted">The problem</span><h2>Partner portals are slow to build and hard to keep current.</h2></div>
+<div style="flex:1;display:flex;gap:48px">
+<div class=rule style="flex:1"><h3>Duplicate content</h3><p class="muted small" style="padding-top:8px">The same pages copied into a separate portal.</p></div>
+<div class=rule style="flex:1"><h3>Coarse access</h3><p class="muted small" style="padding-top:8px">Logged-in or not — no tier, region or role.</p></div>
+<div class=rule style="flex:1"><h3>Slow pages</h3><p class="muted small" style="padding-top:8px">Server-side auth breaks caching.</p></div></div></section>
+<section style="display:flex;flex-direction:column;gap:32px"><h2>How it fits together</h2>
+<div class=arch>
+<div class=node><span class="small muted">Identity</span><h3>Okta</h3><span class="small muted">Groups, tier, region</span></div><div class=arr>→</div>
+<div class="node key"><span class="small muted">Edge</span><h3>Edge function</h3><span class="small muted">Validates token, maps attributes</span></div><div class=arr>→</div>
+<div class=node><span class="small muted">Content</span><h3>Edge Delivery</h3><span class="small muted">Pages tagged with required attributes</span></div><div class=arr>→</div>
+<div class=node><span class="small muted">Result</span><h3>Personal view</h3><span class="small muted">Cached per segment</span></div></div></section>
+<section style="padding-top:0;display:flex;flex-direction:column;gap:8px" class=walk>
+<div class=rule style="display:flex;justify-content:space-between;align-items:baseline"><h3>Walk-through</h3><span class="small muted">12 min · each step links to a feature demo</span></div>
+<div class=row><span class=n>1</span><span style="flex:1;font-size:20px">Sign in as a Gold partner in EMEA</span><span class="small" style="color:var(--accent)">Okta sign-in →</span></div>
+<div class=row><span class=n>2</span><span style="flex:1;font-size:20px">See gated pricing and enablement appear</span><span class="small" style="color:var(--accent)">Closed user groups →</span></div>
+<div class=row><span class=n>3</span><span style="flex:1;font-size:20px">Switch to a Silver partner — content changes</span><span class="small" style="color:var(--accent)">Attribute rules →</span></div>
+<div class=row><span class=n>4</span><span style="flex:1;font-size:20px">Run Lighthouse on a gated page</span><span class="small" style="color:var(--accent)">Performance →</span></div></section>
+<section style="padding-top:0;display:flex;gap:48px">
+<div style="flex:1"><div class=num>1</div><p class=muted>Site for every partner tier</p></div>
+<div style="flex:1"><div class=num>100</div><p class=muted>Lighthouse on gated pages</p></div>
+<div style="flex:1"><div class=num>0</div><p class=muted>Portal servers to run</p></div></section>

@@ -1,0 +1,47 @@
+<!doctype html><meta charset=utf-8><link rel=stylesheet href=s2.css><style>
+.l3{display:flex;gap:64px;padding:48px 64px 120px}
+.side{width:220px;display:flex;flex-direction:column;gap:14px;font-size:16px;color:var(--muted);position:sticky;top:0}
+.side b{color:var(--text);font-weight:700;border-left:2px solid var(--text);padding-left:12px;margin-left:-14px}
+.main{flex:1;display:flex;flex-direction:column;gap:64px}
+.try{border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.try .bar{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--border);font-size:16px}
+.try .body{display:flex}
+.try .doc{flex:1;padding:32px;background:var(--surface);font-size:16px;display:flex;flex-direction:column;gap:12px}
+.try .doc table{border-collapse:collapse;width:100%;background:#fff}
+.try .doc td{border:1px solid var(--border);padding:8px 12px}
+.try .doc td:first-child{font-weight:700;width:40%}
+.try .out{flex:1;padding:32px;display:flex;flex-direction:column;gap:16px}
+.variant{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border:1px solid var(--border);border-radius:8px}
+.variant.win{border-color:var(--pos)}
+.bar2{height:8px;border-radius:999px;background:var(--border);overflow:hidden;width:160px}.bar2 i{display:block;height:100%;background:var(--accent)}
+.steps{display:flex;gap:48px}.steps>div{flex:1;display:flex;flex-direction:column;gap:10px}
+</style>
+<div class="nav"><div class="logo"><svg width="24" height="21" viewBox="0 0 30 26"><path fill="#EB1000" d="M19 0h11v26zM11 0H0v26zM15 9.6L22 26h-4.6l-2-5.2h-5.1z"/></svg>XSC Demo</div><ul>
+<li class=on>Brand Visibility</li>
+<li>Content Supply Chain</li>
+<li>CX Coworker</li>
+<li>Solutions</li>
+<li>Workshops</li>
+<li>Customers</li>
+</ul><span class="btn">Sign in</span></div>
+<div class="wrap" style="padding-top:64px;padding-bottom:48px;display:flex;flex-direction:column;gap:20px">
+<div class=crumb><span>Brand Visibility</span><span>/</span><span>AEM Sites</span><span>/</span><span>Feature demos</span></div>
+<div style="display:flex;justify-content:space-between;align-items:flex-end"><div style="display:flex;flex-direction:column;gap:16px"><h1>Experimentation</h1><p class=lead>Run an A/B test from a document. No tags, no flicker, no developer.</p></div>
+<div style="display:flex;gap:24px" class="small muted"><span>Feature demo</span><span>· 8 min</span><span>· Builds on <a style="color:var(--accent)">Edge Delivery 101</a></span></div></div></div>
+<div class=hair style="margin:0 64px"></div>
+<div class=l3>
+<nav class=side><b>Overview</b><span>Try it</span><span>How it works</span><span>Talk track</span><span>Resources</span></nav>
+<div class=main>
+<div style="display:flex;flex-direction:column;gap:16px;max-width:820px"><h2>Overview</h2><p class=muted>Authors create a variant page and add two rows to the page metadata. Edge Delivery splits traffic at the edge and reports conversions from real-user monitoring.</p></div>
+<div style="display:flex;flex-direction:column;gap:24px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2>Try it</h2><span class="small muted">Simulated — nothing is published</span></div>
+<div class=try><div class=bar><span><b>Step 2 of 3</b> · Set up the experiment</span><span style="display:flex;gap:12px"><span class=btn style="padding:6px 16px;font-size:14px">Reset</span><span class="btn primary" style="padding:6px 16px;font-size:14px">Run 1,000 visits</span></span></div>
+<div class=body><div class=doc><span class="small muted">Page metadata — /products/hero</span><table><tr><td>Experiment</td><td>hero-cta-test</td></tr><tr><td>Experiment Variants</td><td>/drafts/hero-b</td></tr><tr><td>Experiment Split</td><td>50</td></tr></table><span class="small muted">Edit any value, then run.</span></div>
+<div class=out><span class="small muted">Results · 1,000 simulated visits</span>
+<div class=variant><div><h3 style="font-size:18px">Control</h3><span class="small muted">“Learn more”</span></div><div style="display:flex;align-items:center;gap:16px"><div class=bar2><i style="width:42%"></i></div><b>4.2%</b></div></div>
+<div class="variant win"><div><h3 style="font-size:18px">Variant B <span class=pill style="color:var(--pos);margin-left:6px">Winner</span></h3><span class="small muted">“Start free trial”</span></div><div style="display:flex;align-items:center;gap:16px"><div class=bar2><i style="width:61%"></i></div><b>6.1%</b></div></div>
+<span class="small muted">+45% lift · 95% confidence</span></div></div></div></div>
+<div style="display:flex;flex-direction:column;gap:32px"><h2>How it works</h2><div class=steps>
+<div class=rule><span class="small muted">01</span><h3>Author a variant</h3><p class=muted style="font-size:16px">Copy the page into /drafts and change it.</p></div>
+<div class=rule><span class="small muted">02</span><h3>Add metadata</h3><p class=muted style="font-size:16px">Name the experiment and point to the variant.</p></div>
+<div class=rule><span class="small muted">03</span><h3>Read results</h3><p class=muted style="font-size:16px">RUM reports conversions per variant.</p></div></div></div>
+</div></div>

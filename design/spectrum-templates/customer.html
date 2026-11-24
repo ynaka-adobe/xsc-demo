@@ -1,0 +1,34 @@
+<!doctype html><meta charset=utf-8><link rel=stylesheet href=s2.css><style>
+.gate{display:flex;align-items:center;gap:10px;padding:10px 64px;background:var(--surface);font-size:14px;color:var(--muted);border-bottom:1px solid var(--border)}
+.acct{display:flex;justify-content:space-between;align-items:flex-end;padding:80px 64px 48px;border-bottom:1px solid var(--border)}
+.tbl .r{display:flex;gap:32px;padding:20px 0;border-bottom:1px solid var(--border);align-items:baseline}
+.tbl .r>*:nth-child(1){width:380px}.tbl .r>*:nth-child(2){flex:1}.tbl .r>*:nth-child(3){width:140px;text-align:right}
+.tbl .hd{font-size:14px;color:var(--muted);border-bottom:2px solid var(--text);padding-bottom:12px}
+.ok{color:var(--pos);font-weight:700;font-size:16px}.part{color:#b35c00;font-weight:700;font-size:16px}
+.demo{flex:1;display:flex;flex-direction:column;gap:6px;padding-top:16px;border-top:1px solid var(--border)}
+</style>
+<div class="nav"><div class="logo"><svg width="24" height="21" viewBox="0 0 30 26"><path fill="#EB1000" d="M19 0h11v26zM11 0H0v26zM15 9.6L22 26h-4.6l-2-5.2h-5.1z"/></svg>XSC Demo</div><ul>
+<li>Brand Visibility</li>
+<li>Content Supply Chain</li>
+<li>CX Coworker</li>
+<li>Solutions</li>
+<li>Workshops</li>
+<li class=on>Customers</li>
+</ul><span class="btn">Y. Nakagawa</span></div>
+<div class=gate><svg width=14 height=14 viewBox="0 0 16 16"><path fill="#505050" d="M4 7V5a4 4 0 118 0v2h1v8H3V7zm2 0h4V5a2 2 0 10-4 0z"/></svg>Confidential · shared with Acme Corp only · access via Okta</div>
+<div class=acct><div style="display:flex;flex-direction:column;gap:16px"><span class="small muted">Technical validation summary</span><h1 style="font-size:64px">Acme Corp</h1><p class=lead>Global B2B manufacturer · Edge Delivery + AEM Assets evaluation</p></div>
+<div style="display:flex;gap:48px"><div style="display:flex;flex-direction:column;gap:4px"><span class="small muted">Account team</span><b>Y. Nakagawa, SE</b></div><div style="display:flex;flex-direction:column;gap:4px"><span class="small muted">Validated</span><b>June 2026</b></div></div></div>
+<section style="display:flex;gap:48px;padding-bottom:64px"><div style="flex:1"><div class=num>9 / 10</div><p class=muted>Requirements proven</p></div><div style="flex:1"><div class=num>100</div><p class=muted>Lighthouse on their content</p></div><div style="flex:1"><div class=num>3 wk</div><p class=muted>Pilot site, template to live</p></div></section>
+<section style="padding-top:0" class=tbl><h2 style="padding-bottom:32px">Requirements → proof</h2>
+<div class="r hd"><span>Requirement</span><span>How we proved it</span><span>Status</span></div>
+<div class=r><span>Sub-second page loads globally</span><span class=muted>Lighthouse 100 on 12 migrated pages; RUM p75 LCP 0.9s</span><span class=ok>Proven</span></div>
+<div class=r><span>Business users publish without IT</span><span class=muted>Marketing authored and published 4 pages in DA, live session</span><span class=ok>Proven</span></div>
+<div class=r><span>Partner-only content by tier</span><span class=muted>Attribute-based CUG with their Okta tenant</span><span class=ok>Proven</span></div>
+<div class=r><span>Assets reused across sites</span><span class=muted>Dynamic Media URLs in DA; one source, three renditions</span><span class=ok>Proven</span></div>
+<div class=r><span>SAP product data on pages</span><span class=muted>JSON2HTML from a sample feed; live connector pending</span><span class=part>Partial</span></div></section>
+<section style="padding-top:0;display:flex;flex-direction:column;gap:24px"><h2>Demos shown</h2><div style="display:flex;gap:48px">
+<div class=demo><span class="small muted">L2 · 101</span><h3>Edge Delivery 101</h3></div><div class=demo><span class="small muted">Solution</span><h3>Attribute-based CUGs</h3></div><div class=demo><span class="small muted">L3 · Feature</span><h3>JSON2HTML</h3></div><div class=demo><span class="small muted">L2 · 101</span><h3>AEM Assets 101</h3></div></div></section>
+<section style="padding-top:0;display:flex;flex-direction:column"><div class=rule style="display:flex;justify-content:space-between"><h3>Next steps</h3><span class="small muted">Owner · date</span></div>
+<div class=row><span style="font-size:20px">Connect live SAP feed to JSON2HTML</span><span class="small muted">Acme IT · Jul 15</span></div>
+<div class=row><span style="font-size:20px">Pilot: migrate 50 product pages</span><span class="small muted">Adobe SE · Aug 1</span></div>
+<div class=row><span style="font-size:20px">Commercial proposal</span><span class="small muted">Account exec · Aug 8</span></div></section>

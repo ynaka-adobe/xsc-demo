@@ -1,0 +1,77 @@
+diff --git a/blocks/demo-hero/demo-hero.css b/blocks/demo-hero/demo-hero.css
+index 0f7eb38..c79521b 100644
+--- a/blocks/demo-hero/demo-hero.css
++++ b/blocks/demo-hero/demo-hero.css
+@@ -54,6 +54,11 @@
+   text-transform: uppercase;
+ }
+ 
++.demo-hero-tags li.demo-hero-level {
++  background: var(--portfolio-color, var(--link-color));
++  color: #fff;
++}
++
+ .demo-hero-lead .demo-hero-actions {
+   display: flex;
+   flex-wrap: wrap;
+diff --git a/blocks/demo-hero/demo-hero.js b/blocks/demo-hero/demo-hero.js
+index b13246b..cb5af39 100644
+--- a/blocks/demo-hero/demo-hero.js
++++ b/blocks/demo-hero/demo-hero.js
+@@ -1,9 +1,21 @@
++import { getMetadata } from '../../scripts/aem.js';
++
+ export default function decorate(block) {
+   const [lead, media] = block.firstElementChild?.children || [];
+   if (lead) {
+     lead.classList.add('demo-hero-lead');
+     const tags = lead.querySelector(':scope > ul');
+     if (tags) tags.classList.add('demo-hero-tags');
++    const level = getMetadata('level');
++    if (level) {
++      const list = tags || document.createElement('ul');
++      list.classList.add('demo-hero-tags');
++      const badge = document.createElement('li');
++      badge.className = 'demo-hero-level';
++      badge.textContent = level;
++      list.prepend(badge);
++      if (!tags) lead.prepend(list);
++    }
+     const links = [...lead.querySelectorAll(':scope > p a')];
+     if (links.length) {
+       const actions = document.createElement('p');
+diff --git a/scripts/scripts.js b/scripts/scripts.js
+index 4deba31..c821f5c 100644
+--- a/scripts/scripts.js
++++ b/scripts/scripts.js
+@@ -175,6 +175,10 @@ export function decorateMain(main) {
+ async function loadEager(doc) {
+   doc.documentElement.lang = 'en';
+   decorateTemplateAndTheme();
++  ['portfolio', 'product', 'level', 'type'].forEach((key) => {
++    const value = getMetadata(key);
++    if (value) doc.body.dataset[key] = toClassName(value);
++  });
+   await runExperimentation(doc, experimentationConfig);
+   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
+     doc.body.dataset.breadcrumbs = true;
+diff --git a/styles/styles.css b/styles/styles.css
+index 2499a48..8b98c7a 100644
+--- a/styles/styles.css
++++ b/styles/styles.css
+@@ -346,3 +346,15 @@ main a.pill-button.accent:any-link {
+ main a.pill-button.accent:hover {
+   background: var(--link-hover-color);
+ }
++
++body[data-portfolio='brand-visibility'] {
++  --portfolio-color: #3b63fb;
++}
++
++body[data-portfolio='content-supply-chain'] {
++  --portfolio-color: #0b8a4a;
++}
++
++body[data-portfolio='cx-coworker'] {
++  --portfolio-color: #7a5af8;
++}
