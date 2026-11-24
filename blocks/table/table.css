@@ -124,6 +124,7 @@
 }
 
 /* stylelint-disable no-descending-specificity -- proof never combines with other variants */
+
 /* proof variant: requirement to evidence, with a status column */
 .table.proof table {
   border-collapse: collapse;
