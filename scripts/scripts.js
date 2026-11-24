@@ -182,6 +182,11 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    if (doc.body.classList.contains('doc-page')) {
+      const base = `${window.hlx.codeBasePath}/templates/doc-page/doc-page`;
+      const [{ default: decorateTemplate }] = await Promise.all([import(`${base}.js`), loadCSS(`${base}.css`)]);
+      decorateTemplate(main);
+    }
     doc.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
