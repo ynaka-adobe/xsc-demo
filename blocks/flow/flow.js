@@ -1,4 +1,4 @@
-/* Architecture flow: one row per node (label | title | description). Bold title marks the key node. */
+/* Architecture flow: rows are label | title | description. Bold title marks the key node. */
 export default function decorate(block) {
   const list = document.createElement('ol');
   [...block.children].forEach((row) => {
