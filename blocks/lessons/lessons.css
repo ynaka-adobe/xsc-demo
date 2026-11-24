@@ -43,7 +43,7 @@
 }
 
 .lessons-body p.lessons-check::before {
-  content: '✓ ';
+  content: '\2713  ';
 }
 
 .lessons-time {
