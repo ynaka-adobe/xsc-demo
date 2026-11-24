@@ -61,7 +61,24 @@ function buildToc(aside, body) {
   headings.forEach((h) => observer.observe(h));
 }
 
+/* L3 header: breadcrumb (Portfolio / Product / Feature demos) and meta line from page metadata. */
+function buildHeader(body) {
+  const meta = (name) => document.head.querySelector(`meta[name="${name}"]`)?.content?.trim();
+  const h1 = body.querySelector('h1');
+  if (!h1) return;
+  const crumbs = [meta('portfolio'), meta('product'), meta('type') && `${meta('type')} demos`].filter(Boolean);
+  if (crumbs.length) {
+    h1.before(el('ol', { class: 'doc-crumb', 'aria-label': 'Breadcrumb' }, crumbs.map((c) => el('li', {}, [c]))));
+  }
+  const facts = [meta('type') && `${meta('type')} demo`, meta('duration'), meta('level')].filter(Boolean);
+  if (facts.length) {
+    const lead = h1.nextElementSibling?.tagName === 'P' ? h1.nextElementSibling : h1;
+    lead.after(el('ul', { class: 'doc-meta' }, facts.map((f) => el('li', {}, [f]))));
+  }
+}
+
 export default function decorate(main) {
+  buildHeader(main);
   const body = el('div', { class: 'doc-body' }, [...main.children]);
   const sidenav = el('nav', { class: 'doc-sidenav', 'aria-label': 'Section' });
   const toc = el('aside', { class: 'doc-toc', 'aria-label': 'On this page' });

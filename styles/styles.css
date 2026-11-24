@@ -26,6 +26,18 @@
   --gray-700: #4b4b4b;
   --radius-l: 24px;
 
+  /* spectrum 2 tokens */
+  --color-surface: #f8f8f8;
+  --color-border: #e1e1e1;
+  --color-text-muted: #505050;
+  --color-accent: #3b63fb;
+  --color-adobe-red: #eb1000;
+  --color-positive: #05834e;
+  --color-notice: #b35c00;
+  --radius-m: 8px;
+  --radius-pill: 999px;
+  --content-max: 1312px;
+
   /* body sizes */
   --body-font-size-m: 22px;
   --body-font-size-s: 19px;
@@ -88,7 +100,7 @@ body {
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 body.appear {
@@ -125,8 +137,8 @@ h6 {
   margin-bottom: 0.25em;
   font-family: var(--heading-font-family);
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.2;
+  letter-spacing: 0;
   scroll-margin: 40px;
 }
 
@@ -303,10 +315,8 @@ main .eyebrow {
   gap: 10px;
   margin: 0;
   font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--link-color);
+  font-weight: 400;
+  color: var(--color-text-muted);
 }
 
 main a.pill-button:any-link {

@@ -19,19 +19,66 @@
 .doc-page main .doc-body .section + .section {
   margin-top: 64px;
   padding-top: 64px;
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid var(--color-border);
 }
 
 .doc-page main .doc-body h1 {
   margin-top: 0;
-  font-size: var(--heading-font-size-xl);
+  font-size: var(--heading-font-size-xxl);
+  line-height: 1.1;
 }
 
 .doc-page main .doc-body h1 + p {
-  max-width: 800px;
-  color: var(--gray-700);
-  font-size: var(--body-font-size-s);
-  line-height: 1.6;
+  max-width: 820px;
+  color: var(--color-text-muted);
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+.doc-page main .doc-crumb,
+.doc-page main .doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+  color: var(--color-text-muted);
+}
+
+.doc-page main .doc-crumb li + li::before {
+  content: '/';
+  margin-right: 8px;
+}
+
+.doc-page main .doc-meta {
+  gap: 24px;
+  margin: 16px 0 0;
+}
+
+.doc-page main .doc-body h2 {
+  font-size: 36px;
+}
+
+/* try-it: framed interactive area (section style "try-it") */
+.doc-page main .doc-body .section.try-it {
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+}
+
+.doc-page main .doc-body .section.try-it::before {
+  content: 'Try it · simulated, nothing is published';
+  display: block;
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: var(--color-text-muted);
+}
+
+.doc-page main .doc-body .section.try-it + .section {
+  border-top: 0;
 }
 
 .doc-page main .doc-body picture img {
@@ -40,11 +87,7 @@
 }
 
 .doc-page main .doc-sidenav {
-  padding: 24px;
-  border-radius: var(--radius-l);
-  background: var(--background-color);
-  box-shadow: 0 4px 24px rgb(0 0 0 / 8%);
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .doc-page main .doc-sidenav ul,
@@ -61,11 +104,8 @@
 
 .doc-page main .doc-sidenav-group {
   margin: 16px 0 4px;
-  color: var(--gray-700);
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  font-size: 14px;
 }
 
 .doc-page main .doc-sidenav a,
@@ -95,22 +135,26 @@
 
 .doc-page main .doc-toc-title {
   margin: 0 0 8px;
-  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text-muted);
 }
 
 .doc-page main .doc-toc ul {
-  border-left: 1px solid var(--gray-200);
+  border-left: 1px solid var(--color-border);
 }
 
 .doc-page main .doc-toc a.active {
   border-left-color: var(--text-color);
   color: var(--text-color);
+  font-weight: 700;
 }
 
 @media (width >= 900px) {
   .doc-page main .doc-layout {
-    grid-template-columns: 260px minmax(0, 1fr);
-    padding: 48px 40px 96px;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 64px;
+    max-width: var(--content-max);
+    padding: 64px 40px 120px;
   }
 
   .doc-page main .doc-sidenav,
@@ -125,8 +169,8 @@
 
 @media (width >= 1200px) {
   .doc-page main .doc-layout {
-    grid-template-columns: 260px minmax(0, 1fr) 220px;
-    gap: 56px;
+    grid-template-columns: 220px minmax(0, 1fr) 200px;
+    gap: 64px;
   }
 
   .doc-page main .doc-toc {

@@ -1,0 +1,22 @@
+.facts dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px 48px;
+  margin: 0;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.facts dt {
+  font-size: 16px;
+  color: var(--color-text-muted);
+}
+
+.facts dd {
+  margin: 4px 0 0;
+  font-weight: 700;
+}
+
+.facts dd p {
+  margin: 0;
+}
