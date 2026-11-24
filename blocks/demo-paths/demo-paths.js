@@ -41,7 +41,7 @@ function decorateWalkthrough(block) {
   block.replaceChildren(list);
 }
 
-/* shown and next-steps variants: rows are label | title (link optional) */
+/* shown, next-steps and levels variants: rows are label | title (link optional) | description */
 function decorateRows(block) {
   const list = document.createElement('ul');
   [...block.children].forEach((row) => {
@@ -58,6 +58,13 @@ function decorateRows(block) {
     title.className = 'demo-paths-title';
     title.textContent = second?.textContent.trim() || '';
     item.append(label, title);
+    const desc = row.children[2]?.textContent.trim();
+    if (desc) {
+      const sub = document.createElement('span');
+      sub.className = 'demo-paths-desc';
+      sub.textContent = desc;
+      item.append(sub);
+    }
     li.append(item);
     list.append(li);
   });
@@ -65,7 +72,7 @@ function decorateRows(block) {
 }
 
 export default function decorate(block) {
-  if (block.classList.contains('shown') || block.classList.contains('next-steps')) {
+  if (['shown', 'next-steps', 'levels'].some((c) => block.classList.contains(c))) {
     decorateRows(block);
     return;
   }

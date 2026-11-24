@@ -1,4 +1,30 @@
+/* by-product variant: rows are product | list of feature demo links */
+function decorateByProduct(block) {
+  const grid = document.createElement('div');
+  grid.className = 'feature-index-products';
+  [...block.children].forEach((row) => {
+    const [name, links] = row.children;
+    const col = document.createElement('div');
+    col.className = 'feature-index-product';
+    const h = document.createElement('h3');
+    h.textContent = name?.textContent.trim() || '';
+    const list = document.createElement('ul');
+    links?.querySelectorAll('a').forEach((a) => {
+      const li = document.createElement('li');
+      li.append(a);
+      list.append(li);
+    });
+    col.append(h, list);
+    grid.append(col);
+  });
+  block.replaceChildren(grid);
+}
+
 export default function decorate(block) {
+  if (block.classList.contains('by-product')) {
+    decorateByProduct(block);
+    return;
+  }
   const rows = [...block.children];
   const [intro, ...items] = rows;
   intro.classList.add('feature-index-intro');

@@ -101,3 +101,47 @@ main a.feature-index-item:hover .feature-index-arrow {
 main .feature-index-wrapper + .feature-index-wrapper .feature-index {
   padding-top: 32px;
 }
+
+/* by-product variant: L1 hub feature demos grouped by product */
+main .feature-index.by-product {
+  display: block;
+  padding: 0;
+}
+
+main .feature-index-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 48px;
+}
+
+main .feature-index-product h3 {
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--text-color);
+  font-size: 20px;
+}
+
+main .feature-index-product ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2 280px;
+  column-gap: 48px;
+}
+
+main .feature-index-product li {
+  break-inside: avoid;
+  border-bottom: 1px solid var(--color-border);
+}
+
+main .feature-index-product a:any-link {
+  display: block;
+  padding: 14px 0;
+  font-size: 16px;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+main .feature-index-product a:hover {
+  color: var(--color-accent);
+}

@@ -199,6 +199,9 @@ async function loadEager(doc) {
     if (doc.body.classList.contains('customer')) {
       await loadCSS(`${window.hlx.codeBasePath}/templates/customer/customer.css`);
     }
+    if (doc.body.classList.contains('portfolio-hub')) {
+      await loadCSS(`${window.hlx.codeBasePath}/templates/portfolio-hub/portfolio-hub.css`);
+    }
     doc.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
