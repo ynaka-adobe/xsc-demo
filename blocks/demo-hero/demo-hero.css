@@ -125,6 +125,10 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
     gap: 56px;
   }
+
+  .demo-hero > div:has(> :only-child) {
+    grid-template-columns: minmax(0, 760px);
+  }
 }
 
 .demo-hero-caption a.demo-hero-caption-link {
