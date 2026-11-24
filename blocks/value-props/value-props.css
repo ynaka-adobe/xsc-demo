@@ -4,11 +4,6 @@
   font-weight: 800;
 }
 
-.value-props-heading > div > *:not(h2) {
-  margin: -12px 0 24px;
-  color: var(--gray-700);
-}
-
 .value-props ul {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -49,6 +44,11 @@
   font-size: 15px;
   line-height: 1.4;
   color: #555;
+}
+
+.value-props-heading > div > *:not(h2) {
+  margin: -12px 0 24px;
+  color: var(--gray-700);
 }
 
 @media (width >= 600px) {
