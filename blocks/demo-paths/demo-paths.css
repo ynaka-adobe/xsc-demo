@@ -227,10 +227,6 @@
   color: var(--color-text-muted);
 }
 
-.demo-paths.shown a.demo-paths-item:hover .demo-paths-title {
-  color: var(--color-accent);
-}
-
 @media (width < 700px) {
   .demo-paths.next-steps .demo-paths-item {
     grid-template-columns: 1fr;
@@ -280,10 +276,6 @@
   color: var(--color-text-muted);
 }
 
-.demo-paths.levels a.demo-paths-item:hover .demo-paths-title {
-  color: var(--color-accent);
-}
-
 @media (width < 900px) {
   .demo-paths.levels .demo-paths-item {
     grid-template-columns: 1fr 24px;
@@ -298,4 +290,9 @@
     grid-area: 1 / 2 / 4;
     align-self: center;
   }
+}
+
+.demo-paths.shown a.demo-paths-item:hover .demo-paths-title,
+.demo-paths.levels a.demo-paths-item:hover .demo-paths-title {
+  color: var(--color-accent);
 }
