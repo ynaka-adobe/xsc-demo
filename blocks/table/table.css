@@ -55,6 +55,7 @@
   border-top: 1px solid #dadada;
 }
 
+/* striped variant */
 .table.striped tbody tr:nth-child(odd) {
   background-color: var(--light-color);
 }
@@ -169,7 +170,4 @@
 .table.proof table td.table-status.notice {
   color: var(--color-notice);
 }
-
-
-/* striped variant */
 /* stylelint-enable no-descending-specificity */
