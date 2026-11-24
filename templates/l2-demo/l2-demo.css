@@ -1,0 +1,27 @@
+.l2-demo main {
+  background: var(--light-color);
+}
+
+.l2-demo main > .section {
+  padding: 0 24px;
+}
+
+.l2-demo main > .section > div {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.l2-demo main > .section > div + div {
+  margin-top: 48px;
+}
+
+.l2-demo main > .section:last-of-type {
+  padding-bottom: 72px;
+}
+
+@media (width >= 900px) {
+  .l2-demo main > .section > div + div {
+    margin-top: 56px;
+  }
+}

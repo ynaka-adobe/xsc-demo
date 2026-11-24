@@ -1,0 +1,128 @@
+.demo-hero > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+  padding: 48px 0 8px;
+}
+
+.demo-hero-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.demo-hero-lead > * {
+  margin: 0;
+}
+
+.demo-hero-lead h1 {
+  font-size: clamp(44px, 6vw, 64px);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.demo-hero-lead > p {
+  font-size: var(--body-font-size-s);
+  line-height: 1.45;
+  color: var(--gray-700);
+}
+
+.demo-hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-hero-tags li {
+  padding: 6px 12px;
+  border-radius: 14px;
+  background: #ececec;
+  color: #444;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.demo-hero-tags li:first-child {
+  background: #e9efff;
+  color: var(--link-color);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.demo-hero-lead .demo-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.demo-hero-actions a {
+  padding: 12px 24px;
+  border: 2px solid #000;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #000;
+}
+
+.demo-hero-actions a.demo-hero-primary {
+  background: #000;
+  color: #fff;
+}
+
+.demo-hero-actions a:hover {
+  opacity: 0.85;
+}
+
+.demo-hero-media {
+  overflow: hidden;
+  border-radius: var(--radius-l);
+  background: #fff;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 14%);
+}
+
+.demo-hero-media > p:has(picture),
+.demo-hero-media > a,
+.demo-hero-media > picture {
+  display: block;
+  margin: 0;
+}
+
+.demo-hero-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.demo-hero-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+}
+
+.demo-hero-caption p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.demo-hero-caption-link {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+@media (width >= 900px) {
+  .demo-hero > div {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 56px;
+  }
+}
