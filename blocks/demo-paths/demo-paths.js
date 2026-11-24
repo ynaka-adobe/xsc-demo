@@ -20,7 +20,32 @@ function decorateItem(li) {
   li.replaceChildren(link);
 }
 
+/* walkthrough variant: numbered steps (step | link to the feature demo) */
+function decorateWalkthrough(block) {
+  const list = document.createElement('ol');
+  [...block.children].forEach((row, i) => {
+    const [step, link] = row.children;
+    const li = document.createElement('li');
+    const num = document.createElement('span');
+    num.className = 'demo-paths-num';
+    num.textContent = i + 1;
+    step.className = 'demo-paths-step';
+    li.append(num, step);
+    const a = link?.querySelector('a');
+    if (a) {
+      a.className = 'demo-paths-link';
+      li.append(a);
+    }
+    list.append(li);
+  });
+  block.replaceChildren(list);
+}
+
 export default function decorate(block) {
+  if (block.classList.contains('walkthrough')) {
+    decorateWalkthrough(block);
+    return;
+  }
   const cells = [...block.querySelectorAll(':scope > div > div')];
   const row = document.createElement('div');
   row.className = 'demo-paths-row';

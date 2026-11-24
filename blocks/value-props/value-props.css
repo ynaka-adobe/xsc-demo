@@ -100,3 +100,32 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* problem variant: three pain points under a top rule */
+.value-props.problem li {
+  padding: 20px 0 0;
+  border-top: 2px solid var(--text-color);
+  border-radius: 0;
+  background: none;
+}
+
+.value-props.problem .value-props-stat {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-color);
+}
+
+.value-props.problem .value-props-body > * {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+@media (width >= 900px) {
+  .value-props.problem ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 48px;
+  }
+}

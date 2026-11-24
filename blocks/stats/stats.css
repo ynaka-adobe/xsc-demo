@@ -1,0 +1,22 @@
+.stats dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px 48px;
+  margin: 0;
+}
+
+.stats dt {
+  font-size: 72px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+.stats dd {
+  margin: 12px 0 0;
+  color: var(--color-text-muted);
+}
+
+.stats dd p {
+  margin: 0;
+}

@@ -122,3 +122,46 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* walkthrough variant */
+.demo-paths.walkthrough ol {
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--text-color);
+  list-style: none;
+}
+
+.demo-paths.walkthrough li {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.demo-paths.walkthrough .demo-paths-num {
+  flex: none;
+  width: 64px;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--color-accent);
+}
+
+.demo-paths.walkthrough .demo-paths-step {
+  flex: 1;
+  font-size: 20px;
+}
+
+.demo-paths.walkthrough .demo-paths-step p {
+  margin: 0;
+}
+
+.demo-paths.walkthrough a.demo-paths-link:any-link {
+  flex: none;
+  font-size: 16px;
+  color: var(--color-accent);
+}
+
+.demo-paths.walkthrough a.demo-paths-link::after {
+  content: ' \2192';
+}
