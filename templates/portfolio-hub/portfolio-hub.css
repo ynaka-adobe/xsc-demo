@@ -4,8 +4,13 @@ body.portfolio-hub main > .section > div {
 }
 
 body.portfolio-hub main > .section {
-  padding-top: 40px;
-  padding-bottom: 40px;
+  margin: 0;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+body.portfolio-hub main > .section:nth-of-type(2) {
+  padding-top: 80px;
 }
 
 body.portfolio-hub main > .section:first-of-type {
@@ -56,7 +61,7 @@ body.portfolio-hub main > .section:first-of-type li a:any-link {
 }
 
 body.portfolio-hub main h2 {
-  margin-top: 40px;
+  margin-top: 0;
   font-size: 36px;
 }
 
@@ -76,8 +81,22 @@ body.portfolio-hub main > .section.coworker {
   background: var(--color-surface);
 }
 
-body.portfolio-hub main > .section.coworker h2 {
-  margin-top: 0;
+body.portfolio-hub main > .section.coworker ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 40px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+body.portfolio-hub main > .section.coworker a:any-link {
+  font-weight: 700;
+  text-decoration: none;
+}
+
+body.portfolio-hub main > .section.coworker a::after {
+  content: ' \2192';
 }
 
 @media (width < 900px) {
