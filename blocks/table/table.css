@@ -55,6 +55,54 @@
   border-top: 1px solid #dadada;
 }
 
+/* proof variant: requirement to evidence, with a status column */
+.table.proof table {
+  border-collapse: collapse;
+}
+
+.table.proof table thead tr,
+.table.proof table tbody tr {
+  background: none;
+}
+
+.table.proof table th {
+  padding: 12px 24px 12px 0;
+  border-bottom: 2px solid var(--text-color);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+.table.proof table td {
+  padding: 20px 24px 20px 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+.table.proof table td:first-child {
+  font-weight: 700;
+}
+
+.table.proof table td.table-status {
+  padding-top: 23px;
+  padding-right: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.table.proof table td.table-status.positive {
+  color: var(--color-positive);
+}
+
+.table.proof table td.table-status.notice {
+  color: var(--color-notice);
+}
+
+
 /* striped variant */
 .table.striped tbody tr:nth-child(odd) {
   background-color: var(--light-color);
@@ -121,51 +169,4 @@
 
 .table.excel .excel-open {
   font-weight: 600;
-}
-
-/* proof variant: requirement to evidence, with a status column */
-.table.proof table {
-  border-collapse: collapse;
-}
-
-.table.proof table thead tr,
-.table.proof table tbody tr {
-  background: none;
-}
-
-.table.proof table th {
-  padding: 12px 24px 12px 0;
-  border-bottom: 2px solid var(--text-color);
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--color-text-muted);
-  text-align: left;
-}
-
-.table.proof table td {
-  padding: 20px 24px 20px 0;
-  border: 0;
-  border-bottom: 1px solid var(--color-border);
-  vertical-align: top;
-}
-
-.table.proof table td:first-child {
-  font-weight: 700;
-}
-
-.table.proof table td.table-status {
-  padding-top: 23px;
-  padding-right: 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  white-space: nowrap;
-}
-
-.table.proof table td.table-status.positive {
-  color: var(--color-positive);
-}
-
-.table.proof table td.table-status.notice {
-  color: var(--color-notice);
 }

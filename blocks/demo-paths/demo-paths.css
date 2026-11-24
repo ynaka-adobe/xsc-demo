@@ -198,10 +198,6 @@
   line-height: 1.3;
 }
 
-.demo-paths.shown a.demo-paths-item:hover .demo-paths-title {
-  color: var(--color-accent);
-}
-
 /* next-steps variant: action list closing a customer page */
 .demo-paths.next-steps ul {
   margin: 0;
@@ -229,6 +225,10 @@
   font-size: 16px;
   font-weight: 400;
   color: var(--color-text-muted);
+}
+
+.demo-paths.shown a.demo-paths-item:hover .demo-paths-title {
+  color: var(--color-accent);
 }
 
 @media (width < 700px) {
