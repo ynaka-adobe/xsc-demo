@@ -17,6 +17,7 @@
 }
 
 .l2-demo main > .section:last-of-type {
+  margin-bottom: 0;
   padding-bottom: 72px;
 }
 
