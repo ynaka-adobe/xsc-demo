@@ -41,7 +41,34 @@ function decorateWalkthrough(block) {
   block.replaceChildren(list);
 }
 
+/* shown and next-steps variants: rows are label | title (link optional) */
+function decorateRows(block) {
+  const list = document.createElement('ul');
+  [...block.children].forEach((row) => {
+    const [first, second] = row.children;
+    const li = document.createElement('li');
+    const a = row.querySelector('a');
+    const item = document.createElement(a ? 'a' : 'div');
+    item.className = 'demo-paths-item';
+    if (a) item.href = a.href;
+    const label = document.createElement('span');
+    label.className = 'demo-paths-label';
+    label.textContent = first?.textContent.trim() || '';
+    const title = document.createElement('span');
+    title.className = 'demo-paths-title';
+    title.textContent = second?.textContent.trim() || '';
+    item.append(label, title);
+    li.append(item);
+    list.append(li);
+  });
+  block.replaceChildren(list);
+}
+
 export default function decorate(block) {
+  if (block.classList.contains('shown') || block.classList.contains('next-steps')) {
+    decorateRows(block);
+    return;
+  }
   if (block.classList.contains('walkthrough')) {
     decorateWalkthrough(block);
     return;

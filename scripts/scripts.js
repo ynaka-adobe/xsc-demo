@@ -196,6 +196,9 @@ async function loadEager(doc) {
     if (doc.body.classList.contains('solution')) {
       await loadCSS(`${window.hlx.codeBasePath}/templates/solution/solution.css`);
     }
+    if (doc.body.classList.contains('customer')) {
+      await loadCSS(`${window.hlx.codeBasePath}/templates/customer/customer.css`);
+    }
     doc.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }

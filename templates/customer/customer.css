@@ -1,0 +1,95 @@
+/* customer template: gated technical validation summary */
+body.customer main::before {
+  content: 'Confidential \00B7  shared with your team through your access code';
+  display: block;
+  padding: 10px max(24px, calc((100% - var(--content-max)) / 2));
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+body.customer main > .section > div {
+  max-width: var(--content-max);
+}
+
+body.customer main > .section:first-of-type {
+  margin: 0;
+  padding-top: 80px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--color-border);
+  background: none;
+}
+
+body.customer main > .section:first-of-type .default-content-wrapper > p:first-child {
+  margin: 0 0 16px;
+  font-size: 16px;
+  color: var(--color-text-muted);
+}
+
+body.customer main > .section:first-of-type h1 {
+  margin-top: 0;
+  font-size: 64px;
+  line-height: 1.1;
+}
+
+body.customer main > .section:first-of-type h1 + p {
+  max-width: 900px;
+  font-size: 22px;
+  color: var(--color-text-muted);
+}
+
+body.customer main > .section:first-of-type .facts dl {
+  margin-top: 32px;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 0;
+}
+
+body.customer main > .section:has(.stats) {
+  margin-top: 0;
+  padding-top: 56px;
+  padding-bottom: 24px;
+}
+
+body.customer .default-content-wrapper table {
+  width: 100%;
+  margin: 24px 0;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+body.customer .default-content-wrapper th,
+body.customer .default-content-wrapper td {
+  padding: 14px 20px 14px 0;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+body.customer .default-content-wrapper tr:first-child td {
+  border-bottom: 2px solid var(--text-color);
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+body.customer main h2 {
+  font-size: 36px;
+}
+
+body.customer .workshop-layout .workshop-content h2 {
+  margin-top: 80px;
+}
+
+body.customer .workshop-layout .workshop-content > div:first-child h2:first-child {
+  margin-top: 0;
+}
+
+body.customer main .default-content-wrapper:has(+ .table-wrapper, + .demo-paths-wrapper) {
+  margin-bottom: 24px;
+}
+
+@media (width < 900px) {
+  body.customer main > .section:first-of-type h1 {
+    font-size: 44px;
+  }
+}

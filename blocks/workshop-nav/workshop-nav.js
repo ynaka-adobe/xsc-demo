@@ -82,7 +82,7 @@ function decorateBar(block) {
     links.forEach((a) => {
       const on = a.getAttribute('href') === `#${active.id}`;
       a.classList.toggle('active', on);
-      if (on) list.scrollTo({ left: a.offsetLeft - 24, behavior: 'smooth' });
+      if (on) list.scrollTo({ left: a.offsetLeft - links[0].offsetLeft, behavior: 'smooth' });
     });
   };
   window.addEventListener('scroll', spy, { passive: true });

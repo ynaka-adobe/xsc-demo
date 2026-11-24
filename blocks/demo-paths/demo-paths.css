@@ -165,3 +165,75 @@
 .demo-paths.walkthrough a.demo-paths-link::after {
   content: ' \2192';
 }
+
+/* shown variant: cards for demos shown to the customer */
+.demo-paths.shown ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-paths.shown .demo-paths-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.demo-paths.shown .demo-paths-label {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.demo-paths.shown .demo-paths-title {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.demo-paths.shown a.demo-paths-item:hover .demo-paths-title {
+  color: var(--color-accent);
+}
+
+/* next-steps variant: action list closing a customer page */
+.demo-paths.next-steps ul {
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--text-color);
+  list-style: none;
+}
+
+.demo-paths.next-steps .demo-paths-item {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 2fr;
+  gap: 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.demo-paths.next-steps .demo-paths-label {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.demo-paths.next-steps .demo-paths-title {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+@media (width < 700px) {
+  .demo-paths.next-steps .demo-paths-item {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

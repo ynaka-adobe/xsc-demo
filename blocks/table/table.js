@@ -29,6 +29,14 @@ export default async function decorate(block) {
       row.append(cell);
     });
   });
+  if (block.classList.contains('proof')) {
+    tbody.querySelectorAll('tr > td:last-child').forEach((td) => {
+      const status = td.textContent.trim().toLowerCase();
+      td.classList.add('table-status');
+      if (/^(proven|done|complete)/.test(status)) td.classList.add('positive');
+      else if (/^(partial|in progress)/.test(status)) td.classList.add('notice');
+    });
+  }
   block.innerHTML = '';
   block.append(table);
 }
